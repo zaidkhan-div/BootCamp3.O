@@ -39,5 +39,5 @@ app.use("/api/v1/dashbaord", dashbaordRoutes);
 app.use("/upload", express.static(path.join(__dirname, "uploads")));
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT =  5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
