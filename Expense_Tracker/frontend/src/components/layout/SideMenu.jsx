@@ -3,10 +3,13 @@ import { SIDE_MENU_DATA } from "../../utils/data";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import CharAvatar from "../Cards/CharAvatar";
+import { useLocation } from "react-router-dom";
 
 const SideMenu = ({ activeMenu }) => {
     const { user, clearUser } = useContext(UserContext);
     const navigate = useNavigate();
+    const location = useLocation();
+
 
     const handleClick = (route) => {
         if (route === "/logout") {
@@ -46,11 +49,10 @@ const SideMenu = ({ activeMenu }) => {
 
             {SIDE_MENU_DATA.map((item, index) => (
                 <button
+
+
                     key={`menu_${index}`}
-                    className={`w-full flex items-center cursor-pointer gap-4 text-[15px] py-3 px-6 rounded-lg mb-3 ${activeMenu === item.path
-                        ? "text-white bg-purple-600"
-                        : "text-gray-700 hover:bg-gray-100"
-                        }`}
+                    className={`w-full flex items-center cursor-pointer gap-4 text-[15px] py-3 px-6 rounded-lg mb-3  ${location.pathname === item.path ? "bg-purple-600 text-white" : "text-gray-700"}`}
                     onClick={() => handleClick(item.path)}
                 >
                     <item.icon className="text-xl" />

@@ -18,11 +18,12 @@ const AddExpenseForm = ({ onAddExpense }) => {
                 icon={income.icon}
                 onSelect={(selectedIcon) => handleChange("icon", selectedIcon)}
             />
+
             <Input
                 value={income.category}
                 onChange={({ target }) => handleChange("category", target.value)}
                 label="Category"
-                placeholder="Rent, Groceries, etx"
+                placeholder="Rent, Groceries, etc"
                 type="text"
             />
 
@@ -30,19 +31,23 @@ const AddExpenseForm = ({ onAddExpense }) => {
                 value={income.amount}
                 onChange={({ target }) => handleChange("amount", target.value)}
                 label="Amount"
-                placeholder="Rent, Groceries, etx"
+                placeholder="Enter amount"
                 type="number"
             />
 
             <Input
-                value={income?.date}
-                onChange={(target) => handleChange("date", target.value)}
+                value={income.date}
+                onChange={({ target }) => handleChange("date", target.value)}
                 label="Date"
-                placeholder=""
                 type="date"
             />
+
             <div className="flex justify-end mt-6">
-                <button type='button' onClick={() => onAddExpense(income)} className='add-btn add-btn-fill'>
+                <button
+                    type="button"
+                    onClick={() => onAddExpense(income)}
+                    className="add-btn add-btn-fill"
+                >
                     Add Expense
                 </button>
             </div>

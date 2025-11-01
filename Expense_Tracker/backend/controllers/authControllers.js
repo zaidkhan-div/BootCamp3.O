@@ -34,9 +34,9 @@ export const registerUser = async (req, res) => {
             token: generateToken(user._id)
         })
 
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
-            message: "Error registering user", error: err.message
+            message: "Error registering user", error: error.message
         })
     }
 }
@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: "Error login user", error: err.message
+            message: "Error login user", error: error.message
         })
     }
 }
@@ -77,7 +77,7 @@ export const getUserInfo = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            message: "Error login user", error: err.message
+            message: "Error getting user", error: error.message
         })
 
     }

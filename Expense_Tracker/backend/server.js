@@ -32,11 +32,11 @@ connectDb();
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
-app.use("/api/v1/dashbaord", dashbaordRoutes);
+app.use("/api/v1/dashboard", dashbaordRoutes);
 
 
-// save uploads folder
-app.use("/upload", express.static(path.join(__dirname, "uploads")));
+// serve uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Start server
 const PORT =  5000;

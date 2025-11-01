@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs"
 
 const UserSchema = new mongoose.Schema(
@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema(
         profileImageUrl: { type: String, default: null },
     },
     { timestamps: true }
-)
+);
 
 // Hash Password before saving
 UserSchema.pre("save", async function (next) {

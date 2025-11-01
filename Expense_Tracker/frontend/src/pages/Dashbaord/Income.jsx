@@ -23,14 +23,13 @@ const Income = () => {
     const [openAddIncomeModal, setOpenAddIncomeModal] = useState(false)
 
     // Get All income Details
-    const fetchIncomeDetaihandleDownloadIncomeDetailsls = async () => {
-        if (loading) {
-            return;
-        }
+    const fetchIncomeDetails = async () => {
+        if (loading) return;
+        setLoading(true);
         try {
-            const respnse = await axiosInstance.get(`${API_PATHS.INCOME.GET_ALL_INCOME}`)
-            if (respnse.data) {
-                setIncomeData(respnse.data);
+            const response = await axiosInstance.get(`${API_PATHS.INCOME.GET_ALL_INCOME}`)
+            if (response.data) {
+                setIncomeData(response.data);
             }
         } catch (error) {
             console.log("Something went wrong. Please try again", error);
@@ -105,7 +104,8 @@ const Income = () => {
             // create url for the blob
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
-            link.setAttribute("downlaod","income_details.xlsx")
+            link.href = url;
+            link.setAttribute("download","income_details.xlsx")
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -137,7 +137,7 @@ const Income = () => {
                         <IncomeList
                             transactions={incomeData}
                             onDelete={(id) => {
-                                setOpenDeleteAlert({ show: true, date: id });
+                                setOpenDeleteAlert({ show: true, data: id });
                             }}
                             onDownload={handleDownloadIncomeDetails}
                         />

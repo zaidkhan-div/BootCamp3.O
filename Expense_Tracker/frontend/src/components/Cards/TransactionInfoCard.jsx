@@ -6,11 +6,10 @@ import {
     LuTrash2,
 } from "react-icons/lu"
 
-const TrasnactionInfoCard = ({ title, icon, date, amount, type, hideDeleteBtn,onDelete }) => {
-
+const TransactionInfoCard = ({ title, icon, date, amount, type, hideDeleteBtn, onDelete }) => {
 
     const getAmountStyles = () =>
-    type === "income" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
+        type === "income" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
 
     return (
         <div className='group relative flex items-center gap-4 mt-2 p-3 rounded-lg hover:bg-gray-100/50'>
@@ -49,4 +48,6 @@ const TrasnactionInfoCard = ({ title, icon, date, amount, type, hideDeleteBtn,on
     )
 }
 
-export default TrasnactionInfoCard
+export default TransactionInfoCard
+
+

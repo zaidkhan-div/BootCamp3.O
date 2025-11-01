@@ -30,6 +30,10 @@ const Login = () => {
             setError("Please enter the password!");
             return;
         }
+        if (password.length < 8) {
+            setError("Password must be 8 characters");
+            return;
+        }
 
         setError('');
         console.log('Logging in:', { email, password })

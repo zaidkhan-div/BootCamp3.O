@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useUserAuth } from "../../hooks/useUserAuth";
-import DashboardLayout from "../../components/layouts/DashboardLayout";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import ExpenseOverview from "../../components/Expense/ExpenseOverview";
 import { API_PATHS } from "../../utils/apiPaths";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import Modal from "./../../components/Modal"
 import AddExpenseForm from "../../components/Expense/AddExpenseForm";
 import DeleteAlert from "../../components/DeleteAlert";
 import axiosInstance from "../../utils/axiosInstance";
+import ExpenseList from "../../components/Expense/ExpenseList"
 
 const Expense = () => {
   useUserAuth();
@@ -70,7 +71,7 @@ const Expense = () => {
       });
 
       setOpenAddExpenseModal(false);
-      toast.success("Income added successfully");
+      toast.success("Expense added successfully");
       fetchExpenseDetails();
     } catch (error) {
       console.error(
@@ -82,13 +83,13 @@ const Expense = () => {
 
 
   // Delete Expense
-  const deleteIncome = async (id) => {
+  const deleteExpense = async (id) => {
     try {
       await axiosInstance.delete(API_PATHS.EXPENSE.DELETE_EXPENSE(id));
 
       setOpenDeleteAlert({ show: false, data: null });
       toast.success("Expense details deleted successfully");
-      fetchIncomeDetails();
+      fetchExpenseDetails();
     } catch (error) {
       console.error(
         "Error deleting expense:",
@@ -108,14 +109,15 @@ const Expense = () => {
       // create url for the blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
-      link.setAttribute("downlaod", "income_details.xlsx")
+      link.href = url;
+      link.setAttribute("download", "expense_details.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error failed to download expense details:", error);
-      toast.error("Failed to downlaod expense details. Please try again")
+      toast.error("Failed to download expense details. Please try again")
     }
   }
 
@@ -139,10 +141,8 @@ const Expense = () => {
 
           <ExpenseList
             transactions={expenseData}
-            onDelete={(id) => {
-              setOpenDeleteAlert({ show: true, data: id })
-              onDownload = { handleDownloadExpenseDetails }
-            }}
+            onDelete={(id) => setOpenDeleteAlert({ show: true, data: id })}
+            onDownload={handleDownloadExpenseDetails}
           />
 
         </div>

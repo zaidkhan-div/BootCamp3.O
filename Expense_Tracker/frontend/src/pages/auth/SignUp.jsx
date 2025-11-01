@@ -37,6 +37,10 @@ const SignUp = () => {
             setError("Please enter a password");
             return
         }
+        if (password.length < 8) {
+            setError("Password must be 8 characters!");
+            return;
+        }
 
         setError("");
 
@@ -49,19 +53,20 @@ const SignUp = () => {
                 profileImgUrl = imgUploadRes.imageUrl || "";
             }
 
-
             const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
                 fullName,
                 email,
                 password,
-                profileImgUrl
+                profileImageUrl: profileImgUrl
             });
+
             const { token, user } = response.data;
+
             if (token) {
+                localStorage.setItem("token", token);
+                updateUser(user);
+                navigate("/dashboard");
             }
-            localStorage.setItem("token", token);
-            updateUser(user);
-            navigate("/dashboard");
         } catch (error) {
             if (error.response && error.response.data.message) {
                 setError(error.response.data.message);
@@ -113,7 +118,7 @@ const SignUp = () => {
                         Sign Up
                     </button>
                     <p className='text-[13px] text-slate-800 mt-3'>
-                        Already have an accound?{' '}
+                        Already have an account?{' '}
                         <Link to='/login' className='font-medium text-primary underline'>
                             Login
                         </Link>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { LuDownload } from 'react-icons/lu'
 import moment from 'moment'
-import TransactionInfocard from '../Cards/TrasnactionInfoCard'
+import TransactionInfoCard from '../Cards/TransactionInfoCard'
 
 const IncomeList = ({ transactions, onDelete, onDownload }) => {
     return (
@@ -16,7 +16,7 @@ const IncomeList = ({ transactions, onDelete, onDownload }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2">
                 {transactions?.map((income) => (
-                    <TransactionInfocard
+                    <TransactionInfoCard
                         key={income._id}
                         title={income.source}
                         icon={income.icon}

@@ -9,7 +9,7 @@ export const API_PATHS = {
         GET_USER_INFO: "/api/v1/auth/getUser",
     },
     DASHBOARD: {
-        GET_DATA: "/api/v1/dashbaord",
+        GET_DATA: "/api/v1/dashboard",
     },
     INCOME: {
         ADD_INCOME: "/api/v1/income/add",
@@ -24,6 +24,6 @@ export const API_PATHS = {
         DOWNLOAD_EXPENSE: `/api/v1/expense/downloadexcel`,
     },
     IMAGE: {
-        UPLOAD_IMAGE: "/api/v1/auth/upload-image",
+        UPLOAD_IMAGE: "/api/v1/auth/upload-img",
     },
 };
