@@ -43,7 +43,7 @@ const SignUp = () => {
         }
 
         setError("");
-
+        
         // Sign Up Api Call
         try {
 

@@ -47,7 +47,9 @@ const Home = () => {
         fetchDashboardData();
 
         return () => { }
-    }, [])
+    }, []);
+
+    console.log({ dashboardData })
 
     return (
         <DashboardLayout activeMenu="Dashboard">
@@ -102,7 +104,7 @@ const Home = () => {
 
                     <RecentIncome
                         transactions={dashboardData?.last60Days?.income?.transactions || []}
-                        onSeeMore={()=>navigate("/income")}
+                        onSeeMore={() => navigate("/income")}
                     />
 
                 </div>
