@@ -29,9 +29,9 @@ const Navbar = () => {
                     </div>
 
                     {/* CTA Button */}
-                    <button className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition">
-                        Book Appointment
-                    </button>
+                    <Link to="/login" className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition cursor-pointer">
+                        Login / Signup
+                    </Link>
                 </div>
             </Container>
         </nav>

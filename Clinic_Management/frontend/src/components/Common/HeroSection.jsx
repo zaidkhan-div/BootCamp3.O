@@ -1,6 +1,7 @@
 import React from 'react'
 import Container from '../Shared/Container';
 import image1 from "../../assets/heroImg1.jpg"
+import { Link } from "react-router-dom"
 
 const Hero = () => {
     return (
@@ -11,27 +12,27 @@ const Hero = () => {
                     <div className="space-y-5">
                         {/* Top Badge */}
                         <div className="inline-flex items-center space-x-2 text-blue-600 text-sm">
-                            <span>👨‍⚕️</span>
-                            <span>Top-Notch Dental Class, Just for You</span>
+                            <span>🏥</span>
+                            <span>Premium Healthcare Services, Tailored for You</span>
                         </div>
 
                         {/* Main Heading */}
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                            Your <span className="text-blue-600">Best Dental</span><br />
-                            <span className="text-blue-600">Experience</span> Awaits
+                            Welcome to <span className="text-blue-600">Khan's Clinic</span><br />
+                            <span className="text-blue-600">Your Health</span> is Our Priority
                         </h1>
 
                         {/* Description */}
                         <p className="text-gray-600 text-sm leading-relaxed">
-                            Using state-of-the-art, painless technology and<br />
-                            trust, we make dental treatment as relaxed as possible
+                            Providing comprehensive medical care with advanced<br />
+                            technology and compassionate professionals you can trust
                         </p>
 
                         {/* Action Buttons */}
                         <div className="flex gap-4 items-center">
-                            <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-blue-700 transition">
-                                Explore Our Service
-                            </button>
+                            <Link to="/login" className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-blue-700 transition">
+                                Book Appointment
+                            </Link>
                             <button className="text-gray-700 font-medium text-sm hover:text-blue-600 transition flex items-center gap-2">
                                 <span>▶</span>
                                 <span>Watch Video</span>
@@ -39,7 +40,7 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    {/* Right Content - Doctor Image */}
+                    {/* Right Content - Medical Image */}
                     <div
                         className="relative flex justify-end items-center h-96 bg-cover bg-center bg-no-repeat rounded-2xl"
                         style={{ backgroundImage: `url(${image1})` }} >
