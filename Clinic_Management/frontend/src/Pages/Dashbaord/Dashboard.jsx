@@ -6,10 +6,6 @@ const Dashboard = () => {
     return (
         <div>
             <Layout>
-                {/* <div className="flex justify-end items-center p-2">
-                </div>
-                <div className="p-2">
-                </div> */}
                 <Outlet />
             </Layout>
         </div>

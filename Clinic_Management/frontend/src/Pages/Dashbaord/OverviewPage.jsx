@@ -50,14 +50,14 @@ const OverviewPage = () => {
         </Card>
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
           <CardHeader>
-            <CardTitle className="text-sm text-gray-500">Clinic Consulting</CardTitle>
-            <h2 className="text-2xl font-semibold text-gray-800">53.5k</h2>
+            <CardTitle className="text-sm text-gray-500">Total Rooms</CardTitle>
+            <h2 className="text-2xl font-semibold text-gray-800">5</h2>
           </CardHeader>
         </Card>
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
           <CardHeader>
-            <CardTitle className="text-sm text-gray-500">Video Consulting</CardTitle>
-            <h2 className="text-2xl font-semibold text-gray-800">28.0k</h2>
+            <CardTitle className="text-sm text-gray-500">Clinic Consulting</CardTitle>
+            <h2 className="text-2xl font-semibold text-gray-800">28</h2>
           </CardHeader>
         </Card>
       </div>
