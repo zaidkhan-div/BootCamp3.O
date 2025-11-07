@@ -29,7 +29,7 @@ const TimingScehdual = () => {
                     Book a free consultancy.
                 </h1>
                 <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 items-end">
-                    {/* Name Field */}
+
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-gray-700 text-sm font-medium mb-2">
                             Name
@@ -49,7 +49,6 @@ const TimingScehdual = () => {
                         </div>
                     </div>
 
-                    {/* Phone Number Field */}
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-gray-700 text-sm font-medium mb-2">
                             Phone Number
@@ -69,7 +68,6 @@ const TimingScehdual = () => {
                         </div>
                     </div>
 
-                    {/* Preferred Date Field */}
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-gray-700 text-sm font-medium mb-2">
                             Preferred Date
@@ -89,7 +87,6 @@ const TimingScehdual = () => {
                         </div>
                     </div>
 
-                    {/* Preferred Time Field */}
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-gray-700 text-sm font-medium mb-2">
                             Preferred Time
@@ -109,7 +106,6 @@ const TimingScehdual = () => {
                         </div>
                     </div>
 
-                    {/* Submit Button */}
                     <button
                         type="submit"
                         className="bg-blue-600 text-white px-8 py-2.5 rounded-full text-sm font-medium hover:bg-blue-700 transition whitespace-nowrap cursor-pointer"

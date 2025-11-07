@@ -2,6 +2,7 @@ import React from 'react';
 import Container from '../Shared/Container';
 
 const Services = () => {
+  
   const services = [
     {
       id: 1,
@@ -27,9 +28,9 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section id='services' className="py-16 bg-gray-50">
       <Container>
-        {/* Header Section */}
+
         <div className="flex justify-between items-center mb-12">
           <div className='flex flex-col items-start'>
             <p className="text-white bg-blue-600 py-1 px-5 rounded-full uppercase tracking-wider text-sm font-semibold mb-2">
@@ -46,7 +47,7 @@ const Services = () => {
           </button>
         </div>
 
-        {/* Services Grid */}
+        {/* ServicSection */}
         <div className="grid md:grid-cols-3 gap-6">
           {services.map((service) => (
             <div
@@ -82,7 +83,6 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Mobile Button */}
         <div className="mt-8 text-center md:hidden">
           <button className="bg-blue-600 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-700 transition">
             Explore All Services

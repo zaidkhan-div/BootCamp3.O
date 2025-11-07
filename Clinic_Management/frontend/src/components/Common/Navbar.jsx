@@ -7,12 +7,11 @@ const Navbar = () => {
         <nav className="bg-white py-4 border-b">
             <Container>
                 <div className="flex items-center justify-between">
-                    {/* Logo */}
+                    
                     <Link to="/" className="text-xl font-bold text-blue-600 cursor-pointer">
                         Khan'sClinic
                     </Link>
 
-                    {/* Navigation Links */}
                     <div className="hidden md:flex items-center space-x-8">
                         <a href="#home" className="text-gray-700 hover:text-blue-600 transition">
                             Home

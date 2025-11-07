@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 const ChooseUs = () => {
 
     return (
-        <section className="py-16 bg-white">
+        <section id='choose' className="py-16 bg-white">
             <Container>
                 <div className="mx-auto px-4">
-                    {/* Header Section */}
+
                     <div className='flex flex-col justify-center items-center gap-3 mb-5'>
                         <p className='bg-blue-600 text-white text-sm md:text-base px-6 py-2 rounded-full text-center font-semibold'>
                             Why Choose Us
@@ -20,20 +20,17 @@ const ChooseUs = () => {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        {/* Left Side - Main Image */}
                         <div className="relative">
                             <div className="w-full max-w-[450px] h-[500px] rounded-2xl overflow-hidden shadow-lg mx-auto">
                                 <img src={Image1} alt="Khan's Clinic" className='w-full h-full object-cover' />
                             </div>
 
-                            {/* Decorative Badge - Top Right */}
                             <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
                                 <div className="text-center text-white">
                                     <div className="text-2xl">✓</div>
                                 </div>
                             </div>
 
-                            {/* Experience Badge - Bottom Left */}
                             <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-blue-600">15+</div>
@@ -42,11 +39,9 @@ const ChooseUs = () => {
                             </div>
                         </div>
 
-                        {/* Right Side - Content */}
                         <div className="space-y-6">
-                            {/* Features Grid */}
                             <div className="grid gap-6">
-                                {/* Feature 1 */}
+
                                 <div className="flex items-start gap-4 bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
                                     <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +54,6 @@ const ChooseUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Feature 2 */}
                                 <div className="flex items-start gap-4 bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
                                     <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +66,6 @@ const ChooseUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Feature 3 */}
                                 <div className="flex items-start gap-4 bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
                                     <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +78,6 @@ const ChooseUs = () => {
                                     </div>
                                 </div>
 
-                                {/* Feature 4 */}
                                 <div className="flex items-start gap-4 bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
                                     <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,14 +90,13 @@ const ChooseUs = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* CTA Button */}
                             <div className="pt-4">
                                 <Link to="/login" className="bg-blue-600 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
                                     Book an Appointment
                                 </Link>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </Container>

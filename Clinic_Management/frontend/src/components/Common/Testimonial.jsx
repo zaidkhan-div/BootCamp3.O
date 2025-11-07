@@ -44,7 +44,7 @@ const Testimonials = () => {
     return (
         <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
             <Container>
-                {/* Header */}
+
                 <div className="text-center mb-12">
                     <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-2">
                         Testimonials
@@ -54,17 +54,14 @@ const Testimonials = () => {
                     </h2>
                 </div>
 
-                {/* Testimonial Card */}
                 <div className="relative">
                     <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden">
-                        {/* Quote Icon Background */}
+
                         <div className="absolute top-6 right-6 text-blue-100 opacity-50">
                             <Quote size={80} />
                         </div>
 
-                        {/* Content */}
                         <div className="relative z-10">
-                            {/* Avatar and Name */}
                             <div className="flex flex-col items-center mb-6">
                                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-4xl mb-4 shadow-lg">
                                     {testimonials[currentIndex].image}
@@ -77,12 +74,10 @@ const Testimonials = () => {
                                 </p>
                             </div>
 
-                            {/* Testimonial Text */}
                             <p className="text-gray-600 text-center leading-relaxed text-base md:text-lg max-w-3xl mx-auto">
                                 {testimonials[currentIndex].text}
                             </p>
 
-                            {/* Rating Stars */}
                             <div className="flex justify-center gap-1 mt-6">
                                 {[...Array(5)].map((_, i) => (
                                     <span key={i} className="text-yellow-400 text-xl">★</span>
@@ -91,7 +86,6 @@ const Testimonials = () => {
                         </div>
                     </div>
 
-                    {/* Navigation Buttons */}
                     <button
                         onClick={prevTestimonial}
                         className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-6 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition shadow-lg cursor-pointer"
@@ -109,7 +103,6 @@ const Testimonials = () => {
                     </button>
                 </div>
 
-                {/* Dots Indicator */}
                 <div className="flex justify-center gap-2 mt-8">
                     {testimonials.map((_, index) => (
                         <button
