@@ -3,6 +3,7 @@ import connectDb from "./config/db.js";
 import dotenv from "dotenv"
 import cors from "cors"
 import authRoutes from "./routes/authRoutes.js"
+import patientRoutes from "./routes/patientRoutes.js"
 
 const app = express();
 const PORT = 5000;
@@ -19,7 +20,7 @@ app.get("/", (_, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
-// app.use("/api/v1/auth",);
+app.use("/api/v1/patient", patientRoutes);
 // app.use("/api/v1/auth",);
 // app.use("/api/v1/auth",);
 

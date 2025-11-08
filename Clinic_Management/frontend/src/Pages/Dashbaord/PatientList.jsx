@@ -1,70 +1,113 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
-import { PlusCircle } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { apiCall } from "@/utils/api";
+import { API_PATHS } from "@/utils/apiPaths";
+import { useEffect, useState } from "react";
+import { PlusCircle, User, SquarePlus, Activity } from "lucide-react";
 
 const PatientList = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const patients = [
-    {
-      id: 383621,
-      name: "John Doe",
-      age: 35,
-      gender: "Male",
-      email: "john.doe@email.com",
-      phone: "+92 333 1122334",
-      condition: "Routine Checkup",
-      status: "Active",
-    },
-    {
-      id: 37254,
-      name: "Anna Lee",
-      age: 28,
-      gender: "Female",
-      email: "anna.lee@email.com",
-      phone: "+92 322 3344556",
-      condition: "Consultation",
-      status: "Recovered",
-    },
-    {
-      id: 349127,
-      name: "Mark Taylor",
-      age: 40,
-      gender: "Male",
-      email: "mark.taylor@email.com",
-      phone: "+92 321 2233445",
-      condition: "Follow-up",
-      status: "Active",
-    },
-    {
-      id: 48274,
-      name: "Lisa Brown",
-      age: 32,
-      gender: "Female",
-      email: "lisa.brown@email.com",
-      phone: "+92 300 6677889",
-      condition: "Therapy",
-      status: "Discharged",
-    },
-    {
-      id: 586595,
-      name: "David Khan",
-      age: 45,
-      gender: "Male",
-      email: "david.khan@email.com",
-      phone: "+92 307 7788990",
-      condition: "Surgery",
-      status: "Under Treatment",
-    },
-  ]
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await apiCall("GET", API_PATHS.PATIENT.GET_PATIENTS);
+        setData(response);
+      } catch (err) {
+        setError("Failed to load patient data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const getGenderColor = (gender) => {
+    if (gender === "female") return "#FF69B4"; // Pink color for females
+    if (gender === "male") return "#60A5FA";   // Blue color for males
+    return "#D1D5DB";  // Gray color for others/unknown
+  };
+
+  if (loading) return <div className="flex items-center justify-center h-screen text-3xl">Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  const genderData =
+    data?.statistics?.byGender?.map(item => ({
+      name: item._id || 'Unknown',
+      value: item.count,
+    })) || [];
+
+  const sortedGenderData = genderData
+    .sort((a, b) => b.value - a.value);
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
 
-      {/* Headers */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <Card className="border border-neutral-200 shadow-sm">
+          <CardContent className="p-4 flex items-center gap-3">
+            <User className="w-8 h-8 text-blue-500" />
+            <div>
+              <p className="text-sm text-gray-500">Total Patients</p>
+              <p className="text-xl font-semibold text-gray-800">
+                {data?.totalPatients}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-neutral-200 shadow-sm">
+          <CardContent className="p-4 flex items-center gap-3">
+            <SquarePlus className="w-8 h-8 text-green-500" />
+            <div>
+              <p className="text-sm text-gray-500">Recent Patients</p>
+              <p className="text-xl font-semibold text-gray-800">
+                {data?.recentPatients?.length}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+      </div>
+
+      <div className="">
+        <Card className="border border-neutral-200 shadow-sm">
+          <div className="flex items-center justify-center gap-3">
+            <Activity className="w-8 h-8 text-gray-500" />
+            <p className="text-sm text-gray-500">Patient's Gender Distribution</p>
+          </div>
+
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart
+              data={sortedGenderData}
+              margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar
+                dataKey="value"
+                fill={(entry) => getGenderColor(entry.name)} // Dynamically set color based on gender
+              />
+            </BarChart>
+          </ResponsiveContainer>
+
+        </Card>
+      </div>
+
+      {/* Search and Add Patient */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-semibold text-gray-800">Patients Management</h1>
         <div className="flex items-center gap-3">
@@ -76,12 +119,14 @@ const PatientList = () => {
         </div>
       </div>
 
+      {/* Patient Data Table */}
       <Card className="shadow-sm border border-neutral-200">
         <CardHeader>
-          <CardTitle className="text-gray-700 text-lg font-medium">All Registered Patients</CardTitle>
+          <CardTitle className="text-gray-700 text-lg font-medium">
+            All Registered Patients
+          </CardTitle>
         </CardHeader>
 
-        {/* Table Head */}
         <div className="grid grid-cols-8 px-6 py-3 bg-neutral-100 border-b border-neutral-200 text-sm font-semibold text-gray-600">
           <span>ID</span>
           <span>Patient</span>
@@ -96,12 +141,12 @@ const PatientList = () => {
         <CardContent>
           <ScrollArea className="h-[600px]">
             <div className="divide-y divide-neutral-200">
-              {patients.map((patient, i) => (
+              {data?.patients?.map((patient, i) => (
                 <div
                   key={patient.id}
                   className="grid grid-cols-8 items-center py-4 bg-white hover:bg-neutral-50 transition"
                 >
-                  <p className="text-gray-700 text-sm font-medium">{patient.id}</p>
+                  <p className="text-gray-700 text-sm font-medium">{patient._id.slice(0, 5)}</p>
 
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-10 w-10">
@@ -143,7 +188,7 @@ const PatientList = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default PatientList
+export default PatientList;

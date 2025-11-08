@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import User from "../models/userModal.js";
+
+dotenv.config();
 
 export const authMiddleware = async (req, res, next) => {
   try {

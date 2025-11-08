@@ -8,7 +8,7 @@ export const API_PATHS = {
   },
 
   PATIENT: {
-    GET_DOCTORS: "/api/v1/patient/doctors",
+    GET_PATIENTS: "/api/v1/patient/getAllPatients",
     BOOK_APPOINTMENT: "/api/v1/patient/book-appointment",
     GET_APPOINTMENTS: "/api/v1/patient/appointments",
     GET_CASE_HISTORY: "/api/v1/patient/case-history",
