@@ -1,29 +1,72 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { apiCall, apiHelpers } from "@/utils/api";
+import { API_PATHS } from "@/utils/apiPaths";
+import { toast } from "sonner";
 
-
-// Signup Page Component
-const Signup = ({ onSwitchToLogin }) => {
+const Signup = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: '',
         password: '',
+        gender: '',
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.fullName || !formData.email || !formData.phone || !formData.password) {
-            setError("Please fill the form!");
+        setError("");
+
+        if (!formData.fullName || !formData.email || !formData.phone || !formData.password || !formData.gender) {
+            setError("Please fill in all fields!");
             return;
         }
-        console.log('Signup Data:', formData);
+
+        if (formData.phone.length < 11) {
+            setError("Number must be 11 digits");
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await apiCall("POST", API_PATHS.AUTH.REGISTER, {
+                name: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                password: formData.password,
+                gender: formData.gender
+            });
+            
+            toast("Successfully registered");
+
+            setFormData({
+                fullName: '',
+                email: '',
+                phone: '',
+                password: '',
+                gender: ''
+            });
+            navigate("/login")
+        } catch (err) {
+            const errorMessage = err.response?.data?.message ||
+                err.message ||
+                "Signup failed. Please try again.";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const handleChange = (e) => {
         setFormData({
@@ -33,23 +76,27 @@ const Signup = ({ onSwitchToLogin }) => {
     };
 
     useEffect(() => {
-        setTimeout(() => {
-            setError("");
-        }, 5000);
-    }, [error])
+        if (error) {
+            const timer = setTimeout(() => {
+                setError("");
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-                    {
-                        error &&
-                        <p className="text-lg text-red-500">{error}</p>
-                    }
+                    {error && (
+                        <p className="text-red-600 text-sm mt-2 p-2 bg-red-50 rounded">
+                            {error}
+                        </p>
+                    )}
                 </div>
 
-                <div className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Full Name
@@ -61,7 +108,8 @@ const Signup = ({ onSwitchToLogin }) => {
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                disabled={loading}
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-100"
                                 placeholder="Enter your full name"
                             />
                         </div>
@@ -78,7 +126,8 @@ const Signup = ({ onSwitchToLogin }) => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                disabled={loading}
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-100"
                                 placeholder="Enter your email"
                             />
                         </div>
@@ -95,9 +144,32 @@ const Signup = ({ onSwitchToLogin }) => {
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                disabled={loading}
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-100"
                                 placeholder="Enter your phone number"
                             />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Gender
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <select
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                                disabled={loading}
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-100 appearance-none bg-white"
+                            >
+                                <option value="">Select your gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
                         </div>
                     </div>
 
@@ -112,27 +184,29 @@ const Signup = ({ onSwitchToLogin }) => {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                disabled={loading}
+                                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-100"
                                 placeholder="Create a password"
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                                disabled={loading}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                             >
                                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                         </div>
                     </div>
 
-
                     <button
-                        onClick={handleSubmit}
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-lg hover:shadow-xl cursor-pointer"
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-lg hover:shadow-xl disabled:bg-blue-400 disabled:cursor-not-allowed"
                     >
-                        Create Account
+                        {loading ? "Creating..." : "Create Account"}
                     </button>
-                </div>
+                </form >
 
                 <div className="flex items-center my-6">
                     <div className="flex-1 border-t border-gray-300"></div>
@@ -154,9 +228,9 @@ const Signup = ({ onSwitchToLogin }) => {
 
                 <p className="text-center mt-6 text-sm text-gray-600">
                     Already have an account?{' '}
-                    <Link to="/login"
-                        onClick={onSwitchToLogin}
-                        className="text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
+                    <Link
+                        to="/login"
+                        className="text-blue-600 hover:text-blue-700 font-medium"
                     >
                         Login
                     </Link>
@@ -166,4 +240,4 @@ const Signup = ({ onSwitchToLogin }) => {
     );
 };
 
-export default Signup
+export default Signup;

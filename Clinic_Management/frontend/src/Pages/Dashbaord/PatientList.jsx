@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { PlusCircle } from "lucide-react"
 
 const PatientList = () => {
+
   const patients = [
     {
       id: 383621,
@@ -62,7 +63,8 @@ const PatientList = () => {
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Header */}
+
+      {/* Headers */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-semibold text-gray-800">Patients Management</h1>
         <div className="flex items-center gap-3">
@@ -74,48 +76,39 @@ const PatientList = () => {
         </div>
       </div>
 
-      {/* Patients Table */}
       <Card className="shadow-sm border border-neutral-200">
         <CardHeader>
           <CardTitle className="text-gray-700 text-lg font-medium">All Registered Patients</CardTitle>
         </CardHeader>
 
         {/* Table Head */}
-        <div className="grid grid-cols-7 px-6 py-3 bg-neutral-100 border-b border-neutral-200 text-sm font-semibold text-gray-600">
-
-          <div className="flex justify-around items-center ">
-            <span>ID</span>
-            <span>Patient</span>
-          </div>
+        <div className="grid grid-cols-8 px-6 py-3 bg-neutral-100 border-b border-neutral-200 text-sm font-semibold text-gray-600">
+          <span>ID</span>
+          <span>Patient</span>
           <span>Gender</span>
           <span>Age</span>
           <span>Email</span>
           <span>Phone</span>
           <span>Condition</span>
           <span>Status</span>
-
         </div>
 
-        {/* Table Body */}
         <CardContent>
           <ScrollArea className="h-[600px]">
             <div className="divide-y divide-neutral-200">
               {patients.map((patient, i) => (
                 <div
                   key={patient.id}
-                  className="grid grid-cols-7 items-center px-2 py-4 bg-white hover:bg-neutral-50 transition"
+                  className="grid grid-cols-8 items-center py-4 bg-white hover:bg-neutral-50 transition"
                 >
+                  <p className="text-gray-700 text-sm font-medium">{patient.id}</p>
 
-
-                  <div className="flex items-center gap-3">
-                    <p className="text-gray-700 text-sm font-medium">{patient.id}</p>
+                  <div className="flex items-center space-x-2">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={`https://i.pravatar.cc/150?img=${i + 15}`} />
                       <AvatarFallback>{patient.name[0]}</AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="text-gray-800 font-medium">{patient.name}</p>
-                    </div>
+                    <p className="text-gray-800 font-medium">{patient.name}</p>
                   </div>
 
                   <span className="text-sm text-gray-600">{patient.gender}</span>
@@ -123,8 +116,7 @@ const PatientList = () => {
                   <span className="text-sm text-gray-600">{patient.email}</span>
                   <span className="text-sm text-gray-600">{patient.phone}</span>
                   <span className="text-sm text-gray-600">{patient.condition}</span>
-
-                  <div className="flex justify-end">
+                  <div className="flex justify-start">
                     <Badge
                       variant={
                         patient.status === "Active"

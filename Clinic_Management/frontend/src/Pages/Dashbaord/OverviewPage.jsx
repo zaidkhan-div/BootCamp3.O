@@ -34,7 +34,7 @@ const OverviewPage = () => {
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
 
-      {/* Header Cards */}
+      {/* Headers */}
       <div className="grid gap-6 md:grid-cols-4">
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
           <CardHeader>
@@ -133,7 +133,8 @@ const OverviewPage = () => {
             <CardContent className="flex flex-col items-center h-64">
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
-                  <Pie data={data} dataKey="value" outerRadius={80} label>
+                  {/* label */}
+                  <Pie data={data} dataKey="value" outerRadius={80}>
                     {data.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}

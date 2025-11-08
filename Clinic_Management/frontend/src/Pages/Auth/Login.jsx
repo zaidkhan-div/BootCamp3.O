@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { apiCall, apiHelpers } from '../../utils/api';
+import { API_PATHS } from '@/utils/apiPaths';
 
-// Login Page Component
-const Login = ({ onSwitchToSignup }) => {
-
+const Login = () => {
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -12,14 +13,7 @@ const Login = ({ onSwitchToSignup }) => {
         password: ''
     });
 
-    const handleSubmit = (e) => {
-        if (!formData.email || !formData.email) {
-            setError("Please fill the form!")
-            return
-        }
-        e.preventDefault();
-        console.log('Login Data:', formData);
-    };
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -27,12 +21,50 @@ const Login = ({ onSwitchToSignup }) => {
             [e.target.name]: e.target.value
         });
     };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        if (!formData.email || !formData.password) {
+            setError("Please fill the form!")
+            return;
+        };
+
+        setLoading(true);
+
+        try {
+            const response = await apiCall("POST", API_PATHS.AUTH.LOGIN, {
+                email: formData.email,
+                password: formData.password
+            });
+
+            if (response.token) {
+                apiHelpers.setToken(response.token);
+                setFormData({
+                    email: '',
+                    password: ''
+                });
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            const errorMessage = err.response?.data?.message ||
+                err.message ||
+                "Login failed. Please try again.";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
-        setTimeout(() => {
-            setError("");
-            console.log("error state empty!")
-        }, 5000)
+        if (error) {
+            const timer = setTimeout(() => {
+                setError("");
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+
     }, [error])
 
     return (
@@ -40,12 +72,13 @@ const Login = ({ onSwitchToSignup }) => {
             <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-                    {
-                        error &&
-                        <p className="text-red-600 text-lg">{error}</p>
-                    }
+                    {error && (
+                        <p className="text-red-600 text-sm mt-2 p-2 bg-red-50 rounded">
+                            {error}
+                        </p>
+                    )}
                 </div>
-                <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Email Address
@@ -88,25 +121,19 @@ const Login = ({ onSwitchToSignup }) => {
                     </div>
 
                     <div className="flex items-center justify-between">
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
-                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                        </label>
                         <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
                             Forgot Password?
                         </a>
                     </div>
 
                     <button
-                        onClick={handleSubmit}
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-lg hover:shadow-xl cursor-pointer"
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-lg hover:shadow-xl disabled:bg-blue-400 disabled:cursor-not-allowed cursor-pointer"
                     >
-                        Login
+                        {loading ? 'Logging in...' : 'Login'}
                     </button>
-                </div>
+                </form>
 
                 <div className="flex items-center my-6">
                     <div className="flex-1 border-t border-gray-300"></div>
@@ -129,7 +156,6 @@ const Login = ({ onSwitchToSignup }) => {
                 <p className="text-center mt-6 text-sm text-gray-600">
                     Don't have an account?{' '}
                     <button
-                        onClick={onSwitchToSignup}
                         className="text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
                     >
                         <Link to="/sign-up">Sign Up</Link>

@@ -13,7 +13,7 @@ function ProfileMenu() {
 
     const logout = () => {
         toast("Testing please");
-        // navigate("/login");
+        navigate("/login");
     };
     return (
         <DropdownMenu>
