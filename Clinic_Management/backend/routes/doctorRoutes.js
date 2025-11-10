@@ -1,9 +1,13 @@
-import express from "express"
-import { getAllDoctors } from "../controllers/doctorControllers.js"
-import { authMiddleware } from "../middleware/authMiddleware.js"
+import express from "express";
+import { getAllDoctors, addDoctor } from "../controllers/doctorControllers.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/getAllDoctors", authMiddleware, getAllDoctors);
+// GET all doctors
+router.get("/getAllDoctors", authMiddleware, getAllDoctors);
+
+// POST add new doctor
+router.post("/addDoctor", authMiddleware, addDoctor);
 
 export default router;
