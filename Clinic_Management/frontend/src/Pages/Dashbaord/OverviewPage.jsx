@@ -20,6 +20,7 @@ const doctors = [
   { name: "Dr. Emily Johnson", specialization: "Dermatologist", status: "Busy" },
   { name: "Dr. Robert Brown", specialization: "Neurologist", status: "Available" },
   { name: "Dr. Olivia Wilson", specialization: "Pediatrician", status: "Busy" },
+  { name: "Dr. Aman Afridi", specialization: "General Physician", status: "Free" },
 ]
 
 const appointments = [

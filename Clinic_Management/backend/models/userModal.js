@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
             default: "patient",
         },
         phone: { type: String },
-        gender: { type: String, enum: ["male", "female", "other"] },
+        gender: { type: String, enum: ["male", "female", "child", "other"], required: true }
     },
     { timestamps: true }
 );

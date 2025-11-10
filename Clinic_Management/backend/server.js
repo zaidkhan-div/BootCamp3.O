@@ -19,6 +19,7 @@ app.get("/", (_, res) => {
     res.send(`API is working fine and running on Port: ${PORT}`,);
 });
 
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/patient", patientRoutes);
 // app.use("/api/v1/auth",);

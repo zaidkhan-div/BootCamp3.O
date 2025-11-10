@@ -7,7 +7,7 @@ const patientSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    age: { type: Number },
+    age: { type: Number, required: true },
     address: { type: String },
     bloodGroup: { type: String },
     medicalHistory: { type: [String] },

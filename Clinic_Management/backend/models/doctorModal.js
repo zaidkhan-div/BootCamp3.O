@@ -7,8 +7,11 @@ const doctorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
+    phone: { type: String, required: true },
     specialization: { type: String, required: true },
-    experience: { type: Number, required: true }, 
+    experience: { type: Number, required: true },
     scheduleIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +22,7 @@ const doctorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
     },
-    fee: { type: Number, required: true }, 
+    fee: { type: Number, required: true },
   },
   { timestamps: true }
 );

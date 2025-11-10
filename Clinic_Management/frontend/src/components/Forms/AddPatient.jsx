@@ -47,16 +47,6 @@ const AddPatientForm = ({ onClose }) => {
             return;
         }
 
-        if (formData.phone.length !== 11) {
-            setError('Phone number must be 11 digits');
-            return;
-        }
-
-        if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
-            return;
-        }
-
         setLoading(true);
 
         try {
@@ -81,6 +71,7 @@ const AddPatientForm = ({ onClose }) => {
             });
 
             onClose && onClose();
+
         } catch (err) {
             const errorMessage = err.response?.data?.message || err.message || "Failed to add patient";
             setError(errorMessage);
