@@ -91,7 +91,7 @@ const DoctorList = () => {
           <h1 className="text-2xl font-semibold text-gray-800">Doctors Overview</h1>
           <div className="flex items-center gap-3">
             <Input placeholder="Search doctor..." className="w-72" />
-            <Button variant="default" className="flex items-center gap-2 cursor-pointer">
+            <Button onClick={() => setShowForm(true)} variant="default" className="flex items-center gap-2 cursor-pointer">
               <PlusCircle className="w-4 h-4" />
               Add Doctor
             </Button>

@@ -204,7 +204,7 @@ const AddDoctorForm = ({ onClose }) => {
                 </CardContent>
 
                 <CardFooter className="flex gap-3 pt-4">
-                    <Button onClick={handleSubmit} disabled={loading} className="flex-1">
+                    <Button onClick={handleSubmit} disabled={loading} className="flex-1 cursor-pointer">
                         {loading ? 'Adding...' : 'Add Doctor'}
                     </Button>
                     <Button onClick={handleClear} variant="outline" disabled={loading}>

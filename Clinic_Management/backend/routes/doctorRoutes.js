@@ -4,6 +4,6 @@ import { authMiddleware } from "../middleware/authMiddleware.js"
 
 const router = express.Router();
 
-router.get("/getAllDoctors", authMiddleware, getAllDoctors);
+router.post("/getAllDoctors", authMiddleware, getAllDoctors);
 
 export default router;
