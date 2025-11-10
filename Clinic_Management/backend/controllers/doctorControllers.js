@@ -1,18 +1,16 @@
 import User from "../models/userModal.js";
 import Doctor from "../models/doctorModal.js";
-import bcrypt from "bcryptjs";
+
 
 // GET all doctors
 export const getAllDoctors = async (req, res) => {
     try {
-        const totalDoctors = await User.countDocuments({ role: "doctor" });
+        const totalDoctors = await Doctor.countDocuments();
 
         const doctors = await Doctor.find()
-            .populate("userId", "-password")
             .limit(100)
             .sort({ createdAt: -1 });
 
-        // Optional: statistics by specialization
         const doctorsBySpecialization = await Doctor.aggregate([
             { $group: { _id: "$specialization", count: { $sum: 1 } } }
         ]);
@@ -31,60 +29,41 @@ export const getAllDoctors = async (req, res) => {
     }
 };
 
+
 // POST add new doctor
 export const addDoctor = async (req, res) => {
     try {
-        const {
-            name,
-            email,
-            password,
-            age,
-            phone,
-            gender,
-            specialization,
-            experience,
-            roomId,
-            fee,
-            scheduleIds,
-        } = req.body;
+        const { email } = req.body;
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already exists" });
+        // Check if email exists in User collection
+        const userExists = await User.findOne({ email: email.toLowerCase() });
+        if (userExists) {
+            return res.status(400).json({
+                message: "This email is already registered as a user"
+            });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Check if email exists in Doctor collection
+        const doctorExists = await Doctor.findOne({ email: email.toLowerCase() });
+        if (doctorExists) {
+            return res.status(400).json({
+                message: "This email is already registered as a doctor"
+            });
+        }
 
-        // Create User
-        const newUser = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-            age,
-            phone,
-            gender,
-            role: "doctor",
+        // Create new doctor
+        const newDoctor = new Doctor(req.body);
+        await newDoctor.save();
+
+        res.status(201).json({
+            message: "Doctor added successfully",
+            doctor: newDoctor
         });
-
-        // Create Doctor
-        const newDoctor = await Doctor.create({
-            userId: newUser._id,
-            name,
-            age,
-            phone,
-            specialization,
-            experience,
-            roomId,
-            fee,
-            scheduleIds,
-        });
-
-        const doctorInfo = await Doctor.findById(newDoctor._id).populate("userId", "-password");
-        res.status(201).json({ message: "Doctor added successfully", doctor: doctorInfo });
-
     } catch (error) {
-        console.error("Error adding doctor:", error.message || error);
-        res.status(500).json({ message: "Server Error" });
+        res.status(500).json({
+            message: "Error adding doctor",
+            error: error.message
+        });
     }
 };
 

@@ -23,7 +23,8 @@ export const API_PATHS = {
   },
 
   ADMIN: {
-    ADD_DOCTOR: "/api/v1/admin/add-doctor",
+    ADD_DOCTOR: "/api/v1/admin/addDoctor",
+    GET_ALL_DOCTORS:"/api/v1/admin/getAllDoctors",
     UPDATE_DOCTOR: (id) => `/api/v1/admin/update-doctor/${id}`,
     REMOVE_DOCTOR: (id) => `/api/v1/admin/remove-doctor/${id}`,
     ASSIGN_ROOM: "/api/v1/admin/assign-room",

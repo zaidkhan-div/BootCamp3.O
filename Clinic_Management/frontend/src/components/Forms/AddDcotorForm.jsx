@@ -1,37 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     Card,
     CardHeader,
     CardTitle,
     CardDescription,
     CardContent,
-    CardFooter,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { apiCall } from '@/utils/api';
-import { toast } from 'sonner';
-import { API_PATHS } from '@/utils/apiPaths';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { API_PATHS } from "@/utils/apiPaths";
+import { apiCall } from "@/utils/api";
 
-const AddDoctorForm = ({ onClose }) => {
+const AddDoctorForm = ({ onClose, onSuccess }) => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
+
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        age: '',
-        gender: '',
-        specialization: '',
-        experience: '',
-        fee: '',
-        room: '',
-        schedule: '',
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        age: "",
+        gender: "",
+        specialization: "",
+        experience: "",
+        fee: "",
+        roomId: "",
+        scheduleIds: "",
     });
 
     const handleChange = (e) => {
@@ -42,70 +48,91 @@ const AddDoctorForm = ({ onClose }) => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+        if (e) e.preventDefault();
+        setError("");
         setSuccess(false);
 
-        // Simple validation
-        if (!formData.name || !formData.email || !formData.password || !formData.age || !formData.gender || !formData.specialization || !formData.experience || !formData.fee) {
-            setError('Please fill in all required fields!');
+        // Basic validation
+        if (
+            !formData.name ||
+            !formData.email ||
+            !formData.password ||
+            !formData.phone ||
+            !formData.age ||
+            !formData.gender ||
+            !formData.specialization ||
+            !formData.experience ||
+            !formData.fee
+        ) {
+            setError("Please fill in all required fields!");
             return;
         }
 
         setLoading(true);
+
         try {
-            await apiCall("POST", API_PATHS.ADMIN.ADD_DOCTOR, {
+            // ✅ Exact payload backend expects
+            const payload = {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
+                phone: formData.phone,
                 age: formData.age,
                 gender: formData.gender,
                 specialization: formData.specialization,
                 experience: formData.experience,
-                fee: formData.fee,
-                room: formData.room,
-                schedule: formData.schedule,
-            });
+                fee: Number(formData.fee),
+                roomId: formData.room || "Not assigned",
+                scheduleIds: formData.schedule ? [formData.schedule] : [],
+            };
 
-            toast("Doctor added successfully");
+            console.log("Sending payload:", payload);
+
+            await apiCall("POST", API_PATHS.ADMIN.ADD_DOCTOR, payload);
+
             setSuccess(true);
             setFormData({
-                name: '',
-                email: '',
-                password: '',
-                age: '',
-                gender: '',
-                specialization: '',
-                experience: '',
-                fee: '',
-                room: '',
-                schedule: '',
+                name: "",
+                email: "",
+                password: "",
+                phone: "",
+                age: "",
+                gender: "",
+                specialization: "",
+                experience: "",
+                fee: "",
+                room: "",
+                schedule: "",
             });
 
-            onClose && onClose();
+            if (onSuccess) {
+                setTimeout(() => onSuccess(), 1000);
+            }
 
         } catch (err) {
-            const errorMessage = err.response?.data?.message || err.message || "Failed to add doctor";
-            setError(errorMessage);
+            console.error("Error adding doctor:", err);
+            setError(err.message || "Failed to add doctor");
         } finally {
             setLoading(false);
         }
     };
 
+
     const handleClear = () => {
         setFormData({
-            name: '',
-            email: '',
-            password: '',
-            age: '',
-            gender: '',
-            specialization: '',
-            experience: '',
-            fee: '',
-            room: '',
-            schedule: '',
+            name: "",
+            email: "",
+            password: "",
+            phone: "",
+            age: "",
+            gender: "",
+            specialization: "",
+            experience: "",
+            fee: "",
+            roomId: "",
+            scheduleIds: "",
         });
-        setError('');
+        setError("");
         setSuccess(false);
     };
 
@@ -141,76 +168,207 @@ const AddDoctorForm = ({ onClose }) => {
                         </Alert>
                     )}
 
-                    <form className="space-y-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
-                            <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Dr. John Doe" disabled={loading} />
+                    <div className="grid gap-4">
+                        {/* Name + Email */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="name">
+                                    Full Name <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Dr. John Doe"
+                                    disabled={loading}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="email">
+                                    Email <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="john@example.com"
+                                    disabled={loading}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                            <Input id="email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" disabled={loading} />
+                        {/* Phone + Age */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="phone">
+                                    Phone <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="phone"
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    placeholder="03001234567"
+                                    disabled={loading}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="age">
+                                    Age <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="age"
+                                    type="text"
+                                    name="age"
+                                    value={formData.age}
+                                    onChange={handleChange}
+                                    placeholder="35"
+                                    disabled={loading}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
-                            <Input id="password" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="********" disabled={loading} />
+                        {/* Gender + Specialization */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label>
+                                    Gender <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
+                                    value={formData.gender}
+                                    onValueChange={(value) =>
+                                        setFormData({ ...formData, gender: value })
+                                    }
+                                    disabled={loading}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select gender" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="male">Male</SelectItem>
+                                        <SelectItem value="female">Female</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label htmlFor="specialization">
+                                    Specialization <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="specialization"
+                                    name="specialization"
+                                    value={formData.specialization}
+                                    onChange={handleChange}
+                                    placeholder="Cardiology"
+                                    disabled={loading}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="age">Age <span className="text-red-500">*</span></Label>
-                            <Input id="age" type="number" name="age" value={formData.age} onChange={handleChange} placeholder="35" disabled={loading} />
+                        {/* Experience + Fee */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="experience">
+                                    Experience (years) <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="experience"
+                                    type="text"
+                                    name="experience"
+                                    value={formData.experience}
+                                    onChange={handleChange}
+                                    placeholder="10"
+                                    disabled={loading}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="fee">
+                                    Consultation Fee <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="fee"
+                                    type="text"
+                                    name="fee"
+                                    value={formData.fee}
+                                    onChange={handleChange}
+                                    placeholder="100"
+                                    disabled={loading}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid gap-2 flex-1">
-                            <Label>Gender <span className="text-red-500">*</span></Label>
-                            <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })} disabled={loading}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="male">Male</SelectItem>
-                                    <SelectItem value="female">Female</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        {/* Room + Schedule */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="roomId">
+                                    Room ID <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="roomId"
+                                    name="roomId"
+                                    value={formData.roomId}
+                                    onChange={handleChange}
+                                    placeholder="Room101"
+                                    disabled={loading}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="scheduleIds">
+                                    Schedule IDs (comma separated){" "}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="scheduleIds"
+                                    name="scheduleIds"
+                                    value={formData.scheduleIds}
+                                    onChange={handleChange}
+                                    placeholder="schedule1, schedule2"
+                                    disabled={loading}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="specialization">Specialization <span className="text-red-500">*</span></Label>
-                            <Input id="specialization" name="specialization" value={formData.specialization} onChange={handleChange} placeholder="Cardiology" disabled={loading} />
+                        {/* Password */}
+                        <div>
+                            <Label htmlFor="password">
+                                Password <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="********"
+                                disabled={loading}
+                            />
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="experience">Experience (years) <span className="text-red-500">*</span></Label>
-                            <Input id="experience" type="number" name="experience" value={formData.experience} onChange={handleChange} placeholder="10" disabled={loading} />
+                        {/* Buttons */}
+                        <div className="flex gap-3 pt-4">
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                className="flex-1 cursor-pointer"
+                            >
+                                {loading ? "Adding..." : "Add Doctor"}
+                            </Button>
+                            <Button
+                                onClick={handleClear}
+                                variant="outline"
+                                type="button"
+                                disabled={loading}
+                            >
+                                Clear
+                            </Button>
                         </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="fee">Consultation Fee <span className="text-red-500">*</span></Label>
-                            <Input id="fee" type="number" name="fee" value={formData.fee} onChange={handleChange} placeholder="100" disabled={loading} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="room">Room Number</Label>
-                            <Input id="room" name="room" value={formData.room} onChange={handleChange} placeholder="101" disabled={loading} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="schedule">Schedule</Label>
-                            <Input id="schedule" name="schedule" value={formData.schedule} onChange={handleChange} placeholder="Mon-Fri 9am-5pm" disabled={loading} />
-                        </div>
-                    </form>
+                    </div>
                 </CardContent>
-
-                <CardFooter className="flex gap-3 pt-4">
-                    <Button onClick={handleSubmit} disabled={loading} className="flex-1 cursor-pointer">
-                        {loading ? 'Adding...' : 'Add Doctor'}
-                    </Button>
-                    <Button onClick={handleClear} variant="outline" disabled={loading}>
-                        Clear
-                    </Button>
-                </CardFooter>
             </Card>
         </div>
     );

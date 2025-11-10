@@ -2,18 +2,27 @@ import mongoose from "mongoose";
 
 const Appointmensts = new mongoose.Schema(
     {
-        patientId: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
-        doctorId: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
+        patientId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Patient",
+            required: true,
+        },
+        doctorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Doctor",
+            required: true,
+        },
         roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
-        date: { type: String, required: true },
-        startTime: { type: String, required: true },
-        endTime: { type: String, required: true },
+        appointmentDate: { type: Date, required: true },
+        day: { type: String, required: true },
+        startAt: { type: String, required: true },
+        endAt: { type: String, required: true },
         status: {
             type: String,
-            enum: ["pending", "confirmed", "cancelled", "completed"],
-            default: "pending",
+            enum: ["booked", "checked-in", "completed", "cancelled"],
+            default: "booked",
         },
-        notes: { type: String },
+        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
     },
     { timestamps: true }
 );

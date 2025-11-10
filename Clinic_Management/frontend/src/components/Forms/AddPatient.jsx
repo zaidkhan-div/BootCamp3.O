@@ -69,9 +69,6 @@ const AddPatientForm = ({ onClose }) => {
                 gender: '',
                 age: ''
             });
-
-            onClose && onClose();
-
         } catch (err) {
             const errorMessage = err.response?.data?.message || err.message || "Failed to add patient";
             setError(errorMessage);
