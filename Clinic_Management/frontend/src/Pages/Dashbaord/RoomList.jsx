@@ -81,7 +81,7 @@ const RoomList = () => {
                     className="flex flex-col md:flex-row md:items-center justify-between p-5 bg-white border rounded-lg shadow-sm hover:shadow-md transition"
                   >
                     <div className="space-y-1">
-                      <p className="font-semibold text-gray-800">Room #{room._id}</p>
+                      <p className="font-semibold text-gray-800">Room #{room._id.slice(0,5)}</p>
                       <p className="text-sm text-gray-500">{room.type}</p>
                     </div>
 

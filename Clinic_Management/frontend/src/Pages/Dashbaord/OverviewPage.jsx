@@ -12,8 +12,9 @@ import { API_PATHS } from "../../utils/apiPaths"
 const COLORS = ["#60a5fa", "#f472b6"]
 
 const OverviewPage = () => {
-  const [doctors, setDoctors] = useState([])
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [doctors, setDoctors] = useState([])
   const [appointments, setAppointments] = useState([]);
   const [appointLoading, setAppointLoading] = useState(false);
 
@@ -36,9 +37,10 @@ const OverviewPage = () => {
     const fetchDoctors = async () => {
       try {
         const response = await apiCall("GET", API_PATHS.ADMIN.GET_ALL_DOCTORS)
-        setDoctors(response.doctors || [])
+        setDoctors(response.doctors || []);
       } catch (err) {
         console.error("Error fetching doctors:", err)
+        setError(true);
       } finally {
         setLoading(false)
       }
@@ -47,6 +49,8 @@ const OverviewPage = () => {
   }, [])
 
   if (loading) return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>
+  if (error) return <div className="flex items-center justify-center h-screen text-2xl">Failed to fetch the data...</div>
+
 
   const maleDoctors = doctors.filter(d => d.gender?.toLowerCase() === "male").length
   const femaleDoctors = doctors.filter(d => d.gender?.toLowerCase() === "female").length
