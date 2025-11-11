@@ -1,20 +1,31 @@
 import mongoose from "mongoose";
 
-const Rooms = new mongoose.Schema(
+const roomSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true }, // e.g., "Room 1"
-    status: {
+    type: {
       type: String,
-      enum: ["available", "occupied"],
-      default: "available",
+      required: true,
+      trim: true,
     },
-    currentDoctorId: {
+    doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
-      default: null,
+    },
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    schedule: {
+      type: String, // e.g., "09:00 AM - 12:00 PM"
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Available", "Occupied"],
+      default: "Available",
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Room", Rooms);
+export default mongoose.model("Room", roomSchema);

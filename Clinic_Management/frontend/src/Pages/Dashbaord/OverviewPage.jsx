@@ -13,14 +13,24 @@ const COLORS = ["#60a5fa", "#f472b6"]
 
 const OverviewPage = () => {
   const [doctors, setDoctors] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
+  const [appointLoading, setAppointLoading] = useState(false);
 
-  const appointments = [
-    { name: "John Doe", type: "Clinic Consulting", time: "10:30", status: "Ongoing" },
-    { name: "Anna Lee", type: "Video Consulting", time: "11:00", status: "Pending" },
-    { name: "Mark Taylor", type: "Clinic Consulting", time: "11:30", status: "Completed" },
-    { name: "Lisa Brown", type: "Video Consulting", time: "12:00", status: "Ongoing" },
-  ]
+  const fetchAppointments = async () => {
+    try {
+      setAppointLoading(true);
+      const res = await apiCall("GET", API_PATHS.APPOINTMENT.GET_ALL);
+      setAppointments(res.data || []);
+    } catch (err) {
+      console.error("Error fetching appointments:", err);
+    } finally {
+      setAppointLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -93,10 +103,6 @@ const OverviewPage = () => {
                       className="flex items-center justify-between p-3 rounded-md bg-gray-50 hover:bg-gray-100"
                     >
                       <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={`https://i.pravatar.cc/150?img=${i + 1}`} />
-                          <AvatarFallback>{doctor.name[0]}</AvatarFallback>
-                        </Avatar>
                         <div>
                           <p className="text-sm font-medium text-gray-800">{doctor.name}</p>
                           <p className="text-xs text-gray-500">{doctor.specialization}</p>
@@ -122,30 +128,32 @@ const OverviewPage = () => {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-94">
-                {appointments.map((apt, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between p-3 rounded-md bg-gray-50 hover:bg-gray-100 mb-4"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={`https://i.pravatar.cc/150?img=${i + 10}`} />
-                        <AvatarFallback>{apt.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">{apt.name}</p>
-                        <p className="text-xs text-gray-500">{apt.type}</p>
+                {appointLoading ? (
+                  <p className="text-center text-gray-500">Fetching all appointments...</p>
+                ) : (
+                  appointments.map((apt, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-3 rounded-md bg-gray-50 hover:bg-gray-100 mb-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">{apt.userId?.name}</p>
+                          <p className="text-xs text-gray-500">{apt.type || apt.reason}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">{apt.timeSlot}</p>
+                        <Badge variant="outline">{apt.status}</Badge>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-gray-500">{apt.time}</p>
-                      <Badge variant="outline">{apt.status}</Badge>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </ScrollArea>
+
             </CardContent>
           </Card>
+
         </div>
 
         {/* Right Column */}

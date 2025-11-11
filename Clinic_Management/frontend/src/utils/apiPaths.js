@@ -24,7 +24,7 @@ export const API_PATHS = {
 
   ADMIN: {
     ADD_DOCTOR: "/api/v1/admin/addDoctor",
-    GET_ALL_DOCTORS:"/api/v1/admin/getAllDoctors",
+    GET_ALL_DOCTORS: "/api/v1/admin/getAllDoctors",
     UPDATE_DOCTOR: (id) => `/api/v1/admin/update-doctor/${id}`,
     REMOVE_DOCTOR: (id) => `/api/v1/admin/remove-doctor/${id}`,
     ASSIGN_ROOM: "/api/v1/admin/assign-room",
@@ -35,9 +35,15 @@ export const API_PATHS = {
 
   APPOINTMENT: {
     GET_ALL: "/api/v1/appointments/all",
-    GET_BY_ID: (id) => `/api/v1/appointments/${id}`,
+    GET_BY_ID: (id) => `/api/v1/appointments/user/${id}`,
+    // patient appointments
     CREATE: "/api/v1/appointments/create",
-    UPDATE: (id) => `/api/v1/appointments/update/${id}`,
     CANCEL: (id) => `/api/v1/appointments/cancel/${id}`,
   },
+  ROOM: {
+    GET_ALL: "/api/v1/room/all",
+    CREATE: "/api/v1/room/create",
+    DELETE: (id) => `/api/v1/room/delete/${id}`,
+  }
+
 };

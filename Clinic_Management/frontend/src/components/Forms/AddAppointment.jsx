@@ -1,122 +1,90 @@
-import React, { useState } from 'react';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { apiCall } from '@/utils/api';
-import { toast } from 'sonner';
-import { API_PATHS } from '@/utils/apiPaths';
+import React, { useState, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2, AlertCircle } from "lucide-react";
+import { apiCall } from "../../utils/api";
+import { API_PATHS } from "../../utils/apiPaths";
 
-const AddPatientForm = ({ onClose }) => {
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState('');
+const AppointmentForm = ({ user, onSuccess, onClose }) => {
+    const [doctors, setDoctors] = useState([]);
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        password: '',
-        gender: '',
-        age: ''
+        doctorId: "",
+        appointmentDate: null,
+        timeSlot: "",
+        reason: "",
     });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const res = await apiCall("GET", API_PATHS.ADMIN.GET_ALL_DOCTORS);
+                setDoctors(res.doctors || []);
+            } catch (err) {
+                console.error("Failed to fetch doctors:", err);
+            }
+        };
+        fetchDoctors();
+    }, []);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError("");
         setSuccess(false);
 
-        if (!formData.fullName || !formData.email || !formData.phone || !formData.password || !formData.gender || !formData.age) {
-            setError('Please fill in all required fields!');
-            return;
-        }
-
-        if (formData.phone.length !== 11) {
-            setError('Phone number must be 11 digits');
-            return;
-        }
-
-        if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
+        if (!formData.doctorId || !formData.appointmentDate || !formData.timeSlot) {
+            setError("Please fill all required fields.");
             return;
         }
 
         setLoading(true);
 
         try {
-            await apiCall("POST", API_PATHS.AUTH.REGISTER, {
-                name: formData.fullName,
-                email: formData.email,
-                phone: formData.phone,
-                password: formData.password,
-                age: formData.age,
-                gender: formData.gender,
-            });
+            const payload = {
+                userId: "64f1b2c3d4e5f67890123454",
+                doctorId: formData.doctorId,
+                appointmentDate: formData.appointmentDate,
+                timeSlot: formData.timeSlot,
+                reason: formData.reason,
+            };
 
-            toast("Patient added successfully");
+            const res = await apiCall("POST", API_PATHS.APPOINTMENT.CREATE, payload);
+
+            if (!res || res.status === false) {
+                throw new Error(res.message || "Failed to book appointment");
+            }
             setSuccess(true);
-            setFormData({
-                fullName: '',
-                email: '',
-                phone: '',
-                password: '',
-                gender: '',
-                age: ''
-            });
+            setFormData({ doctorId: "", appointmentDate: null, timeSlot: "", reason: "" });
 
             onClose && onClose();
+            
+            if (onSuccess) setTimeout(() => onSuccess(), 1500);
         } catch (err) {
-            const errorMessage = err.response?.data?.message || err.message || "Failed to add patient";
-            setError(errorMessage);
+            console.error(err);
+            setError(err.message || "Error booking appointment");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleClear = () => {
-        setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            password: '',
-            gender: '',
-            age: ''
-        });
-        setError('');
-        setSuccess(false);
-    };
-
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <Card className="relative w-full max-w-md shadow-xl">
-                <button
-                    onClick={onClose}
-                    className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition cursor-pointer"
-                >
-                    ✕
-                </button>
-
+            <Card className=" relative w-full max-w-md shadow-xl">
+                <button onClick={onClose} className="absolute text-black text-lg top-5 right-5 hover:text-foreground cursor-pointer">✕</button>
                 <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Add New Patient</CardTitle>
-                    <CardDescription>Enter basic patient information</CardDescription>
+                    <CardTitle className="text-2xl">Book Appointment</CardTitle>
                 </CardHeader>
-
                 <CardContent>
                     {error && (
                         <Alert variant="destructive" className="mb-4">
@@ -124,113 +92,76 @@ const AddPatientForm = ({ onClose }) => {
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
-
                     {success && (
                         <Alert className="mb-4 bg-green-50 border-green-200">
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            <AlertDescription className="text-green-800">
-                                Patient added successfully!
-                            </AlertDescription>
+                            <AlertDescription className="text-green-800">Appointment booked successfully!</AlertDescription>
                         </Alert>
                     )}
 
-                    <form className="space-y-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="fullName">Full Name <span className="text-red-500">*</span></Label>
-                            <Input
-                                id="fullName"
-                                name="fullName"
-                                value={formData.fullName}
-                                onChange={handleChange}
-                                placeholder="John Doe"
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="john@example.com"
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="phone">Phone <span className="text-red-500">*</span></Label>
-                            <Input
-                                id="phone"
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                placeholder="Number"
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="age">Age <span className="text-red-500">*</span></Label>
-                            <Input
-                                id="age"
-                                type="number"
-                                name="age"
-                                value={formData.age}
-                                onChange={handleChange}
-                                placeholder="30"
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="********"
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="grid gap-2 flex-1">
-                            <Label>Gender <span className="text-red-500">*</span></Label>
+                    <div className="grid gap-4">
+                        {/* Doctor Selection */}
+                        <div>
+                            <Label>Doctor <span className="text-red-500">*</span></Label>
                             <Select
-                                value={formData.gender}
-                                onValueChange={(value) => setFormData({ ...formData, gender: value })}
-                                disabled={loading}
+                                value={formData.doctorId}
+                                onValueChange={(value) => setFormData({ ...formData, doctorId: value })}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select gender" />
+                                    <SelectValue placeholder="Select Doctor" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="male">Male</SelectItem>
-                                    <SelectItem value="female">Female</SelectItem>
-                                    <SelectItem value="child">Child</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
+                                    {doctors.map((doc) => (
+                                        <SelectItem key={doc._id} value={doc._id}>
+                                            {doc.name} - {doc.specialization}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                    </form>
-                </CardContent>
 
-                <CardFooter className="flex gap-3 pt-4">
-                    <Button onClick={handleSubmit} disabled={loading} className="flex-1 cursor-pointer">
-                        {loading ? 'Adding...' : 'Add Patient'}
-                    </Button>
-                    <Button onClick={handleClear} variant="outline" disabled={loading}>
-                        Clear
-                    </Button>
-                </CardFooter>
+                        {/* Appointment Date */}
+                        <div>
+                            <Label>Date <span className="text-red-500">*</span></Label>
+                            <Calendar
+                                mode="single"
+                                selected={formData.appointmentDate}
+                                onSelect={(date) => setFormData({ ...formData, appointmentDate: date })}
+                                className="w-full rounded-md border"
+                            />
+                        </div>
+
+                        {/* Time Slot */}
+                        <div>
+                            <Label>Time Slot <span className="text-red-500">*</span></Label>
+                            <Input
+                                name="timeSlot"
+                                placeholder="e.g., 10:00 AM - 11:00 AM"
+                                value={formData.timeSlot}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        {/* Reason */}
+                        <div>
+                            <Label>Reason</Label>
+                            <Input
+                                name="reason"
+                                placeholder="Reason for appointment"
+                                value={formData.reason}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        {/* Submit */}
+                        <Button onClick={handleSubmit} disabled={loading} className="w-full mt-2 cursor-pointer">
+                            {loading ? "Booking..." : "Book Appointment"}
+                        </Button>
+                    </div>
+                </CardContent>
             </Card>
         </div>
     );
 };
 
-export default AddPatientForm;
+export default AppointmentForm;
