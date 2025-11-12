@@ -6,22 +6,31 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useAuth } from "../Context/AuthContext";
 
 function ProfileMenu() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
-    const logout = () => {
-        toast("Testing please");
+    const handleLogout = () => {
+        logout();
         navigate("/login");
     };
+
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild className="cursor-pointer">
-                <Button variant="outline" onClick={() => alert("Testing")}>Profile</Button>
+            {/* Trigger that toggles dropdown open/close */}
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="cursor-pointer">
+                    Profile
+                </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+
+            {/* Dropdown content shown when clicking "Profile" */}
+            <DropdownMenuContent className="w-40" align="start">
+                <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

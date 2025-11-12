@@ -9,8 +9,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { apiCall } from "../../utils/api";
 import { API_PATHS } from "../../utils/apiPaths";
+import { useAuth } from "../../Context/AuthContext";
 
-const AppointmentForm = ({ user, onSuccess, onClose }) => {
+const AppointmentForm = ({ onSuccess, onClose }) => {
     const [doctors, setDoctors] = useState([]);
     const [formData, setFormData] = useState({
         doctorId: "",
@@ -21,6 +22,9 @@ const AppointmentForm = ({ user, onSuccess, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+
+    const { user } = useAuth();
+
 
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -33,6 +37,7 @@ const AppointmentForm = ({ user, onSuccess, onClose }) => {
         };
         fetchDoctors();
     }, []);
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,9 +55,10 @@ const AppointmentForm = ({ user, onSuccess, onClose }) => {
 
         setLoading(true);
 
+
         try {
             const payload = {
-                userId: "64f1b2c3d4e5f67890123454",
+                userId: user.id,
                 doctorId: formData.doctorId,
                 appointmentDate: formData.appointmentDate,
                 timeSlot: formData.timeSlot,
@@ -67,8 +73,6 @@ const AppointmentForm = ({ user, onSuccess, onClose }) => {
             setSuccess(true);
             setFormData({ doctorId: "", appointmentDate: null, timeSlot: "", reason: "" });
 
-            onClose && onClose();
-            
             if (onSuccess) setTimeout(() => onSuccess(), 1500);
         } catch (err) {
             console.error(err);

@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { apiCall } from "../../utils/api"
 import { API_PATHS } from "../../utils/apiPaths"
+import { useAuth } from "../../Context/AuthContext"
 
 const COLORS = ["#60a5fa", "#f472b6"]
 
@@ -18,29 +19,40 @@ const OverviewPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [appointLoading, setAppointLoading] = useState(false);
 
+  const { user } = useAuth();
+
+  // 🟢 fetchAppointments now depends on user.role
   const fetchAppointments = async () => {
     try {
-      setAppointLoading(true);
-      const res = await apiCall("GET", API_PATHS.APPOINTMENT.GET_ALL);
-      setAppointments(res.data || []);
+      setAppointLoading(true)
+      let res
+
+      if (user.role === "admin") {
+        res = await apiCall("GET", API_PATHS.APPOINTMENT.GET_ALL)
+      } else if (user.role === "patient") {
+        res = await apiCall("GET", API_PATHS.PATIENT.GET_APPOINTMENTS)
+      }
+
+      setAppointments(res?.data || [])
     } catch (err) {
-      console.error("Error fetching appointments:", err);
+      console.error("Error fetching appointments:", err)
     } finally {
-      setAppointLoading(false);
+      setAppointLoading(false)
     }
-  };
+  }
+
   useEffect(() => {
-    fetchAppointments();
-  }, []);
+    fetchAppointments()
+  }, [user?.role])
 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
         const response = await apiCall("GET", API_PATHS.ADMIN.GET_ALL_DOCTORS)
-        setDoctors(response.doctors || []);
+        setDoctors(response.doctors || [])
       } catch (err) {
         console.error("Error fetching doctors:", err)
-        setError(true);
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -49,18 +61,18 @@ const OverviewPage = () => {
   }, [])
 
   if (loading) return <div className="flex items-center justify-center h-screen text-2xl">Loading...</div>
-  if (error) return <div className="flex items-center justify-center h-screen text-2xl">Failed to fetch the data...</div>
-
+  if (error) return <div className="flex items-center justify-center h-screen text-2xl">Failed to fetch data...</div>
 
   const maleDoctors = doctors.filter(d => d.gender?.toLowerCase() === "male").length
   const femaleDoctors = doctors.filter(d => d.gender?.toLowerCase() === "female").length
+
   const chartData = [
     { name: "Male Doctors", value: maleDoctors },
     { name: "Female Doctors", value: femaleDoctors },
   ]
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-6 pt-0 space-y-6 bg-gray-50 min-h-screen">
       {/* Header Stats */}
       <div className="grid gap-6 md:grid-cols-4">
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
@@ -72,7 +84,7 @@ const OverviewPage = () => {
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
           <CardHeader>
             <CardTitle className="text-sm text-gray-500">Appointments</CardTitle>
-            <h2 className="text-2xl font-semibold text-gray-800">24.4k</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">{appointments.length}</h2>
           </CardHeader>
         </Card>
         <Card className="bg-white shadow-sm hover:shadow-md border-neutral-200">
@@ -142,7 +154,7 @@ const OverviewPage = () => {
                     >
                       <div className="flex items-center gap-3">
                         <div>
-                          <p className="text-sm font-medium text-gray-800">{apt.userId?.name}</p>
+                          <p className="text-sm font-medium text-gray-800">{apt.doctorId?.name}</p>
                           <p className="text-xs text-gray-500">{apt.type || apt.reason}</p>
                         </div>
                       </div>

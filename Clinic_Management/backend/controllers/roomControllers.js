@@ -5,9 +5,9 @@ import User from "../models/userModal.js";
 // Create Room
 export const createRoom = async (req, res) => {
   try {
-    const { type, doctorId, patientId, schedule, status } = req.body;
+    const { type, roomId, doctorId, patientId, schedule, status } = req.body;
 
-    const room = new Room({ type, doctorId, patientId, schedule, status });
+    const room = new Room({ type, roomId, doctorId, patientId, schedule, status });
     await room.save();
 
     res.status(201).json({ message: "Room created successfully", data: room });

@@ -23,7 +23,7 @@ const AddRoom = ({ onClose }) => {
     const [error, setError] = useState('');
     const [doctors, setDoctors] = useState([]);
     const [formData, setFormData] = useState({
-        roomNumber: '',
+        roomId: '',
         type: '',
         doctorId: '',
         schedule: '',
@@ -52,7 +52,7 @@ const AddRoom = ({ onClose }) => {
         setError('');
         setSuccess(false);
 
-        if (!formData.roomNumber || !formData.type || !formData.doctorId || !formData.schedule) {
+        if (!formData.roomId || !formData.type || !formData.doctorId || !formData.schedule) {
             setError('Please fill all required fields!');
             return;
         }
@@ -63,7 +63,7 @@ const AddRoom = ({ onClose }) => {
             toast('Room added successfully');
             setSuccess(true);
             setFormData({
-                roomNumber: '',
+                roomId: '',
                 type: '',
                 doctorId: '',
                 schedule: '',
@@ -77,7 +77,7 @@ const AddRoom = ({ onClose }) => {
     };
 
     const handleClear = () => {
-        setFormData({ roomNumber: '', type: '', doctorId: '', schedule: '', status: 'Available' });
+        setFormData({ roomId: '', type: '', doctorId: '', schedule: '', status: 'Available' });
         setError('');
         setSuccess(false);
     };
@@ -97,8 +97,8 @@ const AddRoom = ({ onClose }) => {
 
                     <form className="space-y-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="roomNumber">Room Number / Name <span className="text-red-500">*</span></Label>
-                            <Input id="roomNumber" name="roomNumber" value={formData.roomNumber} onChange={handleChange} placeholder="101" disabled={loading} />
+                            <Label htmlFor="roomId">Room Number / Name <span className="text-red-500">*</span></Label>
+                            <Input id="roomId" name="roomId" value={formData.roomId} onChange={handleChange} placeholder="101" disabled={loading} />
                         </div>
 
                         <div className="grid gap-2">

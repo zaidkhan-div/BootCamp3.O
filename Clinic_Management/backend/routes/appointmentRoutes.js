@@ -21,4 +21,5 @@ router.get("/user/:userId", getUserAppointments);
 // Delete an appointment (admin or patient)
 router.delete("/cancel/:id", deleteAppointment);
 
+
 export default router;

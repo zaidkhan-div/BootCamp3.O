@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiCall, apiHelpers } from '../../utils/api';
 import { API_PATHS } from '@/utils/apiPaths';
+import { useAuth } from '../../Context/AuthContext';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -21,6 +22,9 @@ const Login = () => {
             [e.target.name]: e.target.value
         });
     };
+
+    const { login } = useAuth();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -29,14 +33,14 @@ const Login = () => {
             setError("Please fill the form!")
             return;
         };
-
         setLoading(true);
-
         try {
             const response = await apiCall("POST", API_PATHS.AUTH.LOGIN, {
                 email: formData.email,
                 password: formData.password
             });
+            
+            login(response.token, response.user);
 
             if (response.token) {
                 apiHelpers.setToken(response.token);
@@ -44,7 +48,7 @@ const Login = () => {
                     email: '',
                     password: ''
                 });
-                navigate('/dashboard');
+                navigate(response.user.role === "admin" ? "/dashboard" : "/dashboard");
             }
         } catch (err) {
             const errorMessage = err.response?.data?.message ||
@@ -55,7 +59,6 @@ const Login = () => {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         if (error) {

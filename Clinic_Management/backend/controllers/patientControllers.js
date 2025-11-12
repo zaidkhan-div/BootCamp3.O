@@ -1,3 +1,4 @@
+import Appointment from "../models/appointmentModal.js";
 import User from "../models/userModal.js"
 
 export const getAllPatients = async (req, res) => {
@@ -30,3 +31,16 @@ export const getAllPatients = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 }
+
+export const getPatientAppointments = async (req, res) => {
+    try {
+        const userId = req.user._id; // ✅ changed from req.user.id to req.user._id
+        const appointments = await Appointment.find({ userId })
+            .populate("doctorId", "name specialization")
+            .sort({ createdAt: -1 });
+
+        res.json({ message: "Appointments fetched", data: appointments });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

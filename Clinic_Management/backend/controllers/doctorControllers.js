@@ -1,5 +1,6 @@
 import User from "../models/userModal.js";
 import Doctor from "../models/doctorModal.js";
+import Appointment from "../models/appointmentModal.js"
 
 
 // GET all doctors
@@ -67,3 +68,19 @@ export const addDoctor = async (req, res) => {
     }
 };
 
+
+
+export const getDoctorAppointments = async (req, res) => {
+    try {
+        const doctorId = req.user.id; // from auth middleware
+
+        const appointments = await Appointment.find({ doctorId })
+            .populate("userId", "name email phone")
+            .populate("doctorId", "name specialization")
+            .sort({ createdAt: -1 });
+
+        res.json({ message: "Doctor appointments fetched", data: appointments });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
