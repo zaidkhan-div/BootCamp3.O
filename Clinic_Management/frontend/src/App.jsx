@@ -14,6 +14,8 @@ import PatientList from './Pages/Dashbaord/PatientList'
 import RoomList from './Pages/Dashbaord/RoomList'
 import ProtectedRoute from './ProtectedRoute'
 import { AuthProvider } from './Context/AuthContext'
+import Unauthorized from './Pages/Unauthorized'
+import CaseHistoryList from './Pages/Dashbaord/CaseHistoryList'
 
 const App = () => {
   return (
@@ -38,20 +40,22 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<Signup />} />
-
+        <Route path='*' element={<Unauthorized />} />
         {/* Dashboard with nested routes */}
-        <Route element={<ProtectedRoute allowedRoles={['admin', 'patient']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['admin', 'patient','doctor']} />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<OverviewPage />} />
             <Route path="appointments" element={<AppointmentList />} />
             <Route path="doctors" element={<DoctorList />} />
             <Route path="patients" element={<PatientList />} />
             <Route path="rooms" element={<RoomList />} />
+            <Route path="case-history" element={<CaseHistoryList />} />
           </Route>
         </Route>
 
-      </Routes>
-      {showNavbarFooter && <Footer />}
+      </Routes >
+      {showNavbarFooter && <Footer />
+      }
     </>
   )
 }

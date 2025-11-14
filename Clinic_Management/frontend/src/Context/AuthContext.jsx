@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { apiHelpers } from "../utils/api"; // your axios helper functions
+import { apiHelpers } from "../utils/api"; 
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
-    const [loading, setLoading] = useState(true); // 🟢 NEW
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storedToken = apiHelpers.getToken();
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
             setToken(storedToken);
             setUser(storedUser);
         }
-        setLoading(false); // ✅ Only mark done after checking
+        setLoading(false);
     }, []);
 
     const login = (token, userData) => {

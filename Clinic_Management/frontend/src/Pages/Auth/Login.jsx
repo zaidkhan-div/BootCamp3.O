@@ -39,7 +39,7 @@ const Login = () => {
                 email: formData.email,
                 password: formData.password
             });
-            
+
             login(response.token, response.user);
 
             if (response.token) {
@@ -48,7 +48,8 @@ const Login = () => {
                     email: '',
                     password: ''
                 });
-                navigate(response.user.role === "admin" ? "/dashboard" : "/dashboard");
+                // navigate(response.user.role === "admin" ? "/dashboard" : "/dashboard");
+                navigate("/dashboard");
             }
         } catch (err) {
             const errorMessage = err.response?.data?.message ||

@@ -86,7 +86,6 @@ const AddDoctorForm = ({ onClose, onSuccess }) => {
                 scheduleIds: formData.schedule ? [formData.schedule] : [],
             };
 
-            console.log("Sending payload:", payload);
 
             await apiCall("POST", API_PATHS.ADMIN.ADD_DOCTOR, payload);
 
@@ -111,7 +110,8 @@ const AddDoctorForm = ({ onClose, onSuccess }) => {
 
         } catch (err) {
             console.error("Error adding doctor:", err);
-            setError(err.message || "Failed to add doctor");
+            const errorMessage = err.response?.data?.message || err.message || "Failed to add dpctor";
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }

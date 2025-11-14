@@ -24,7 +24,7 @@ const PatientList = () => {
         const response = await apiCall("GET", API_PATHS.PATIENT.GET_PATIENTS);
         setData(response);
       } catch (err) {
-        setError("Failed to load patient data.");
+        setError("Failed to load patient data...");
       } finally {
         setLoading(false);
       }
@@ -34,7 +34,7 @@ const PatientList = () => {
   }, []);
 
   if (loading) return <div className="flex items-center justify-center h-screen text-3xl">Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="flex items-center justify-center  text-xl">{error}</div>;
 
   const genderData =
     data?.statistics?.byGender?.map(item => ({

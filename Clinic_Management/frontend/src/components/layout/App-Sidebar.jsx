@@ -25,12 +25,16 @@ const AppSidebar = () => {
                 { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },
                 { title: "Room List", url: "/dashboard/rooms", icon: House },
             ]
-            : [
-                // patient sees only limited routes
-                { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },
-                { title: "Case History", url: "/dashboard/case-history", icon: History },
-            ]),
+            : user?.role === "doctor"
+                ? [
+                    { title: "Case History", url: "/dashboard/case-history", icon: History },
+                ]
+                : [
+                    { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },
+                    { title: "Case History", url: "/dashboard/case-history", icon: History },
+                ]),
     ];
+
 
     return (
         <Sidebar>
