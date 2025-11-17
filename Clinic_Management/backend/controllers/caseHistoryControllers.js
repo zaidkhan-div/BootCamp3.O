@@ -1,4 +1,4 @@
-import CaseHistory from "../models/caseHistoryModal.js";
+import CaseHistory from "../models/caseHistoryModel.js";
 import Appointment from "../models/appointmentModal.js";
 import Doctor from "../models/doctorModal.js";
 import Patient from "../models/patientModal.js";

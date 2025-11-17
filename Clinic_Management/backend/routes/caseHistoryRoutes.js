@@ -5,7 +5,7 @@ import {
   getDoctorCaseHistories,
   getPatientCaseHistories,
   deleteCaseHistory,
-} from "../controllers/caseHistoryController.js";
+} from "../controllers/caseHistoryControllers.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
