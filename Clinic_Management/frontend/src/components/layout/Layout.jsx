@@ -37,7 +37,7 @@ export default function Layout({ children }) {
                 </div>
 
                 {/* Page Content */}
-                <div className="p-10">{children}</div>
+                <div className="pt-5">{children}</div>
             </main>
         </SidebarProvider>
     )

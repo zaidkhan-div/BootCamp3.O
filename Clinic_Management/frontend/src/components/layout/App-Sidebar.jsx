@@ -17,9 +17,9 @@ const AppSidebar = () => {
     const { user } = useAuth();
 
     const items = [
-        { title: "Overview", url: "/dashboard", icon: Home },
         ...(user?.role === "admin"
             ? [
+                { title: "Overview", url: "/dashboard", icon: Home },
                 { title: "Doctor List", url: "/dashboard/doctors", icon: ClipboardPlus },
                 { title: "Patient List", url: "/dashboard/patients", icon: User },
                 { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },
@@ -28,6 +28,7 @@ const AppSidebar = () => {
             : user?.role === "doctor"
                 ? [
                     { title: "Case History", url: "/dashboard/case-history", icon: History },
+                    { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },
                 ]
                 : [
                     { title: "Appointment List", url: "/dashboard/appointments", icon: ClipboardClock },

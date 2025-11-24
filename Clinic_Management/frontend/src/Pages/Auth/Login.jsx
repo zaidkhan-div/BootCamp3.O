@@ -23,7 +23,7 @@ const Login = () => {
         });
     };
 
-    const { login } = useAuth();
+    const { login, user } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,8 +48,9 @@ const Login = () => {
                     email: '',
                     password: ''
                 });
-                // navigate(response.user.role === "admin" ? "/dashboard" : "/dashboard");
-                navigate("/dashboard");
+                navigate(response.user.role === "admin" ? "/dashboard" : "/appointments");
+                // navigate("/dashboard");
+                
             }
         } catch (err) {
             const errorMessage = err.response?.data?.message ||

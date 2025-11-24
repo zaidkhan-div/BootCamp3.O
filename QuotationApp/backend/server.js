@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // database connect
-dbConnect();
+dbConnect(process.env.MONGO_URI);
 
 app.use("/api", appRoutes);
 

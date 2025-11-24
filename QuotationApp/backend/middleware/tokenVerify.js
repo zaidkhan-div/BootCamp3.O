@@ -1,5 +1,3 @@
-
-
 const jwt = require("jsonwebtoken");
 
 const tokenVerify = async (req, res, next) => {

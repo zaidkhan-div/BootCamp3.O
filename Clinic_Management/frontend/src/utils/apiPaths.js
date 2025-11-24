@@ -24,14 +24,14 @@ export const API_PATHS = {
   },
 
   ADMIN: {
-    ADD_DOCTOR: "/api/v1/admin/addDoctor",
-    GET_ALL_DOCTORS: "/api/v1/admin/getAllDoctors",
+    ADD_DOCTOR: "/api/v1/doctor/addDoctor",
+    GET_ALL_DOCTORS: "/api/v1/doctor/getAllDoctors",
     UPDATE_DOCTOR: (id) => `/api/v1/admin/update-doctor/${id}`,
     REMOVE_DOCTOR: (id) => `/api/v1/admin/remove-doctor/${id}`,
     ASSIGN_ROOM: "/api/v1/admin/assign-room",
     GET_ROOMS: "/api/v1/admin/rooms",
     SET_SCHEDULE: "/api/v1/admin/set-schedule",
-    GET_APPOINTMENTS: "/api/v1/admin/appointments",
+    GET_APPOINTMENTS: "/api/v1/appointments/all",
     GET_ALL_CASE_HISTORY: "/api/v1/case-history/all", // ✅ admin sees all case histories
   },
 

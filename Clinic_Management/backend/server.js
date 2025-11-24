@@ -26,7 +26,8 @@ app.get("/", (_, res) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/patient", patientRoutes);
-app.use("/api/v1/admin", doctorRoutes);
+// app.use("/api/v1/admin", doctorRoutes);
+app.use("/api/v1/doctor", doctorRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
 app.use("/api/v1/room", roomRoutes);
 app.use("/api/v1/case-history", caseHistoryRoutes);

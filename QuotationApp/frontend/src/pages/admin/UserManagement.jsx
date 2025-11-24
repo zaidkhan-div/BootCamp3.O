@@ -9,6 +9,7 @@ import PermissionDenied from "../../components/ErrorsModal/PermissionDenied";
 
 function AddUserModal({ open, onClose }) {
   const modalRef = useRef(null);
+  const {dataLoad} = useDataContext()
 
   // Outside Click Close
   useEffect(() => {
@@ -56,6 +57,7 @@ function AddUserModal({ open, onClose }) {
       });
 
       toast.success("User Create Succesfully");
+      dataLoad()
       onClose();
     } catch (error) {
       console.error("Error:", error);

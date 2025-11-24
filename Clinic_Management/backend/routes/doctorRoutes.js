@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllDoctors, addDoctor, getDoctorAppointments } from "../controllers/doctorControllers.js";
+import { getAllDoctors, addDoctor, getDoctorAppointments, updateAppointmentStatus } from "../controllers/doctorControllers.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -11,6 +11,8 @@ router.get("/getAllDoctors", authMiddleware, getAllDoctors);
 router.post("/addDoctor", authMiddleware, addDoctor);
 
 router.get("/appointments", authMiddleware, getDoctorAppointments);
+
+router.put("/update-status/:id", authMiddleware, updateAppointmentStatus);
 
 
 export default router;

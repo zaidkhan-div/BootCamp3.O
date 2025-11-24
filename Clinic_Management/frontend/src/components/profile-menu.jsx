@@ -20,18 +20,9 @@ function ProfileMenu() {
     return (
         <DropdownMenu>
             {/* Trigger that toggles dropdown open/close */}
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="cursor-pointer">
-                    Profile
-                </Button>
-            </DropdownMenuTrigger>
-
-            {/* Dropdown content shown when clicking "Profile" */}
-            <DropdownMenuContent className="w-40" align="start">
-                <DropdownMenuItem onClick={handleLogout}>
-                    Log out
-                </DropdownMenuItem>
-            </DropdownMenuContent>
+            <Button onClick={handleLogout} variant="outline" className="cursor-pointer">
+                Log out
+            </Button>
         </DropdownMenu>
     );
 }

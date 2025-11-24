@@ -17,6 +17,7 @@ import QuotationHistory from "./pages/admin/QuotationHistory";
 import { AuthProvider } from "./context/AuthContext";
 import { DataProvider } from "./context/DataContext";
 import { ToastContainer } from 'react-toastify';
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 const App = () => {
   return (
@@ -26,12 +27,13 @@ const App = () => {
       <DataProvider>
         <Routes>
           {/* Public Routes */}
+         <Route path="new-invoice/:invoiceId" element={<NewInvoice />} />
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected/Admin Layout */}
           <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/client-list" element={<ClientDashboard />} />
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/new-invoice" element={<NewInvoice />} />

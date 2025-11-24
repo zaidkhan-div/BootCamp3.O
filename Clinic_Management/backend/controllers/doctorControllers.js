@@ -1,7 +1,7 @@
 import User from "../models/userModal.js";
 import Doctor from "../models/doctorModal.js";
 import Appointment from "../models/appointmentModal.js"
-
+import {ensureRole} from "../utils/helperFunctions.js"
 
 // GET all doctors
 export const getAllDoctors = async (req, res) => {
@@ -70,16 +70,62 @@ export const addDoctor = async (req, res) => {
 
 
 
+// export const getDoctorAppointments = async (req, res) => {
+//     try {
+//         const doctorId = req.user.id; // from auth middleware
+
+//         const appointments = await Appointment.find({ doctorId })
+//             .populate("userId", "name email phone")
+//             .populate("doctorId", "name specialization")
+//             .sort({ createdAt: -1 });
+
+//         res.json({ message: "Doctor appointments fetched", data: appointments });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
 export const getDoctorAppointments = async (req, res) => {
     try {
-        const doctorId = req.user.id; // from auth middleware
+        if (!ensureRole(req, res, "doctor")) return;
+
+        const doctorId = req.user._id; // doctor logged in
 
         const appointments = await Appointment.find({ doctorId })
             .populate("userId", "name email phone")
             .populate("doctorId", "name specialization")
-            .sort({ createdAt: -1 });
+            .sort({ appointmentDate: 1, createdAt: -1 });
 
         res.json({ message: "Doctor appointments fetched", data: appointments });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const updateAppointmentStatus = async (req, res) => {
+    try {
+        if (!ensureRole(req, res, "doctor")) return;
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const allowedStatuses = ["pending", "completed", "cancelled"];
+        if (!allowedStatuses.includes(status?.toLowerCase())) {
+            return res.status(400).json({ message: "Invalid status" });
+        }
+
+        const appointment = await Appointment.findById(id);
+        if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+        // Only allow the doctor assigned to update
+        if (appointment.doctorId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "You are not assigned to this appointment" });
+        }
+
+        appointment.status = status.toLowerCase();
+        await appointment.save();
+
+        res.json({ message: "Appointment status updated", data: appointment });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

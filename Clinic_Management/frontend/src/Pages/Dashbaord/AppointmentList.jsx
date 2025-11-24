@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card";
+import {DropdownMenuItem, DropdownMenuContent, DropdownMenu, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import AppointmentForm from "../../components/Forms/AddAppointment";
 import { apiCall } from "../../utils/api.js";
 import { API_PATHS } from "../../utils/apiPaths";
 import { useAuth } from "../../Context/AuthContext";
+
 
 const AppointmentList = () => {
   const [showForm, setShowForm] = useState(false);
@@ -23,9 +25,11 @@ const AppointmentList = () => {
       let res;
 
       if (user?.role === "admin") {
-        res = await apiCall("GET", API_PATHS.APPOINTMENT.GET_ALL);
+        res = await apiCall("GET", API_PATHS.ADMIN.GET_APPOINTMENTS);
       } else if (user?.role === "patient") {
         res = await apiCall("GET", API_PATHS.PATIENT.GET_APPOINTMENTS);
+      } else if (user?.role === "doctor") {
+        res = await apiCall("GET", API_PATHS.DOCTOR.GET_APPOINTMENTS);
       }
 
       setAppointments(res?.data || []);
@@ -33,6 +37,17 @@ const AppointmentList = () => {
       console.error("Error fetching appointments:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await apiCall("PUT", API_PATHS.DOCTOR.UPDATE_APPOINTMENT_STATUS(id), {
+        status,
+      });
+      fetchAppointments();
+    } catch (err) {
+      console.error("Error updating status:", err);
     }
   };
 
@@ -53,7 +68,7 @@ const AppointmentList = () => {
       {showForm && (
         <AppointmentForm
           onClose={() => setShowForm(false)}
-          onSuccess={fetchAppointments} // Refresh after adding
+          onSuccess={fetchAppointments}
         />
       )}
 
@@ -61,14 +76,27 @@ const AppointmentList = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1 className="text-2xl font-semibold text-gray-800">
-            {user?.role === "admin" ? "All Appointments" : "Your Appointments"}
+            {user?.role === "admin"
+              ? "All Appointments"
+              : user?.role === "doctor"
+                ? "Your Doctor Appointments"
+                : "Your Appointments"}
           </h1>
 
-          {/* 🟢 Only admin can add appointments */}
           <div className="flex items-center gap-3">
-            <Input placeholder="Search by patient, doctor, or type..." className="w-72" />
+            <Input
+              placeholder="Search by patient, doctor, or type..."
+              className="w-72"
+            />
+
+            {/* Only patients can book */}
             {user?.role === "patient" && (
-              <Button className="cursor-pointer" onClick={() => setShowForm(true)}>Add Appointment</Button>
+              <Button
+                className="cursor-pointer"
+                onClick={() => setShowForm(true)}
+              >
+                Add Appointment
+              </Button>
             )}
           </div>
         </div>
@@ -79,9 +107,9 @@ const AppointmentList = () => {
             <CardContent className="p-4 flex items-center gap-3">
               <Clock className="w-8 h-8 text-blue-500" />
               <div>
-                <p className="text-sm text-gray-500">Upcoming</p>
+                <p className="text-sm text-gray-500">Pending</p>
                 <p className="text-xl font-semibold text-gray-800">
-                  {appointments.filter(a => a.status === "Upcoming").length}
+                  {appointments.filter((a) => a.status === "pending").length}
                 </p>
               </div>
             </CardContent>
@@ -91,9 +119,9 @@ const AppointmentList = () => {
             <CardContent className="p-4 flex items-center gap-3">
               <CheckCircle2 className="w-8 h-8 text-green-500" />
               <div>
-                <p className="text-sm text-gray-500">Completed</p>
+                <p className="text-sm text-gray-500">Approved</p>
                 <p className="text-xl font-semibold text-gray-800">
-                  {appointments.filter(a => a.status === "Completed").length}
+                  {appointments.filter((a) => a.status === "approved").length}
                 </p>
               </div>
             </CardContent>
@@ -104,7 +132,9 @@ const AppointmentList = () => {
               <Calendar className="w-8 h-8 text-gray-500" />
               <div>
                 <p className="text-sm text-gray-500">Total Appointments</p>
-                <p className="text-xl font-semibold text-gray-800">{appointments.length}</p>
+                <p className="text-xl font-semibold text-gray-800">
+                  {appointments.length}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -114,18 +144,19 @@ const AppointmentList = () => {
         <Card className="shadow-sm border border-neutral-200">
           <CardHeader>
             <CardTitle className="text-gray-700 text-lg font-medium">
-              {user?.role === "admin" ? "All Appointments" : "Your Appointments"}
+              Appointment Records
             </CardTitle>
           </CardHeader>
 
           {/* Table Header */}
-          <div className="grid grid-cols-6 px-6 py-3 bg-neutral-100 border-b border-neutral-200 text-sm font-semibold text-gray-600">
+          <div className="grid grid-cols-7 px-6 py-3 bg-neutral-100 border-b border-neutral-200 text-sm font-semibold text-gray-600">
             <span>Patient</span>
             <span>Doctor</span>
             <span>Date</span>
             <span>Time</span>
-            <span>Type</span>
+            <span>Reason</span>
             <span>Status</span>
+            <span>Action</span>
           </div>
 
           <CardContent>
@@ -139,29 +170,116 @@ const AppointmentList = () => {
                   {appointments.map((appt) => (
                     <div
                       key={appt._id}
-                      className="grid grid-cols-6 items-center px-6 py-4 bg-white hover:bg-neutral-50 transition"
+                      className="grid grid-cols-7 items-center px-6 py-4 bg-white hover:bg-neutral-50 transition"
                     >
-                      <span className="text-gray-800">{user.name}</span>
-                      <span className="text-gray-700">{appt.doctorId?.name || "N/A"}</span>
+                      {/* Patient Name */}
+                      <span className="text-gray-800">
+                        {user.role === "patient"
+                          ? user.name
+                          : appt.userId?.name || "N/A"}
+                      </span>
+
+                      {/* Doctor Name */}
+                      <span className="text-gray-700">
+                        {user.role === "doctor"
+                          ? user.name
+                          : appt.doctorId?.name || "N/A"}
+                      </span>
+
                       <span className="text-gray-700">
                         {new Date(appt.appointmentDate).toLocaleDateString()}
                       </span>
+
                       <span className="text-gray-700">{appt.timeSlot}</span>
-                      <span className="text-gray-700">{appt.reason || "-"}</span>
+
+                      <span className="text-gray-700">
+                        {appt.reason || "-"}
+                      </span>
+
+                      {/* Status + Doctor Actions */}
                       <div className="flex justify-end">
-                        <Badge
-                          className={
-                            appt.status === "Upcoming"
-                              ? "bg-blue-500 text-white"
-                              : appt.status === "Completed"
+                        {user.role === "doctor" ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={
+                                  "capitalize " +
+                                  (appt.status === "completed"
+                                    ? "bg-green-500 text-white"
+                                    : appt.status === "pending"
+                                      ? "bg-yellow-500 text-white"
+                                      : appt.status === "rejected"
+                                        ? "bg-red-500 text-white"
+                                        : "bg-gray-500 text-white")
+                                }
+                              >
+                                {appt.status}
+                              </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={() => handleStatusUpdate(appt._id, "approved")}
+                              >
+                                Approve
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onClick={() => handleStatusUpdate(appt._id, "rejected")}
+                              >
+                                Reject
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onClick={() => handleStatusUpdate(appt._id, "completed")}
+                              >
+                                Completed
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <Badge
+                            className={
+                              "capitalize " +
+                              (appt.status === "completed"
                                 ? "bg-green-500 text-white"
-                                : appt.status === "Cancelled"
-                                  ? "bg-red-500 text-white"
-                                  : "bg-gray-400 text-white"
-                          }
-                        >
-                          {appt.status || "Upcoming"}
-                        </Badge>
+                                : appt.status === "pending"
+                                  ? "bg-yellow-500 text-white"
+                                  : appt.status === "rejected"
+                                    ? "bg-red-500 text-white"
+                                    : "bg-gray-500 text-white")
+                            }
+                          >
+                            {appt.status}
+                          </Badge>
+                        )}
+                      </div>
+
+
+                      {/* Doctor Actions */}
+                      <div className="flex gap-2 justify-end">
+                        {user.role === "doctor" &&
+                          appt.status === "pending" && (
+                            <>
+                              <Button
+                                className="bg-green-600 text-white px-3"
+                                onClick={() =>
+                                  handleStatusUpdate(appt._id, "approved")
+                                }
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                className="bg-red-600 text-white px-3"
+                                onClick={() =>
+                                  handleStatusUpdate(appt._id, "rejected")
+                                }
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          )}
                       </div>
                     </div>
                   ))}

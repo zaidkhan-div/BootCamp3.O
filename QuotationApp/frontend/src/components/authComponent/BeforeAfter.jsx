@@ -4,7 +4,6 @@ import { assets } from "../../assets/assets";
 export default function BeforeAfter() {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
-  const [direction, setDirection] = useState(1); // 1 = right, -1 = left
   const containerRef = useRef(null);
 
   const handleMove = (clientX) => {
@@ -21,46 +20,6 @@ export default function BeforeAfter() {
   const handleMouseUp = () => setIsDragging(false);
   const handleMouseMove = (e) => isDragging && handleMove(e.clientX);
   const handleTouchMove = (e) => isDragging && handleMove(e.touches[0].clientX);
-
-useEffect(() => {
-  if (isDragging) return;
-
-  let startTime = Date.now();
-  let interval;
-  let currentDirection = 1; // 1 = right, -1 = left
-
-  interval = setInterval(() => {
-    let elapsed = Date.now() - startTime;
-
-    // 5 sec baad stop + center
-    if (elapsed >= 6050) {
-      clearInterval(interval);
-      setSliderPosition(50);
-      return;
-    }
-
-    // Movement logic (left ↔ right)
-    setSliderPosition((prev) => {
-      let next = prev + currentDirection * 1.5; // speed
-
-      if (next >= 100) {
-        currentDirection = -1; // right → left
-        next = 100;
-      }
-      if (next <= 0) {
-        currentDirection = 1; // left → right
-        next = 0;
-      }
-
-      return next;
-    });
-  }, 30);
-
-  return () => clearInterval(interval);
-}, [isDragging]);
-
-
-
 
   useEffect(() => {
     if (isDragging) {
@@ -89,7 +48,7 @@ useEffect(() => {
       </div>
 
       <div className="relative z-10">
-        <div className="w-full md:w-[568px]  h-full  max-w-2xl mx-auto flex flex-col items-center justify-center ">
+        <div className="w-full md:w-[568px] h-full max-w-2xl mx-auto flex flex-col items-center justify-center ">
           {/* Before/After Slider */}
           <div
             ref={containerRef}

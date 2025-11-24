@@ -14,11 +14,13 @@ import { base_url } from "../../services/config";
 import { useAuthContext } from "../../context/AuthContext";
 import { useDataContext } from "../../context/DataContext";
 import axios from "axios";
+import SaveAsModal from "../../components/common/SaveAsModal";
+import ShareQuotationModal from "../../components/common/ShareQuotationModal";
 
 export default function Dashboard() {
   const { getUserDetails, token } = useAuthContext();
   const userData = getUserDetails();
-  const { data, setData } = useDataContext();
+  const { data, setData, dataLoad } = useDataContext();
   const quotations = data?.quotations || [];
   const users = data?.users || [];
 
@@ -27,22 +29,13 @@ export default function Dashboard() {
   const totalUsers = users.length;
 
   useEffect(() => {
-    const dataLoad = async () => {
-      
-      const url = `${base_url}/quotation/dasboard-summary`;
-      const res = await axios.get(url, {
-        headers: {
-          companyid: userData.companyId,
-        },
-      });
-      setData(res.data);
-    };
 
     if (token === false) return;
     dataLoad();
   }, [token]);
 
   return (
+    <>
     <div className="w-full min-h-screen bg-[#F8F9FA]">
       {/* HEADER */}
       <header className="bg-white border-b border-gray-100 px-4 sm:px-8 py-4 w-full">
@@ -273,5 +266,6 @@ export default function Dashboard() {
         <MessageCircle className="w-6 h-6 text-white" />
       </button>
     </div>
+    </>
   );
 }

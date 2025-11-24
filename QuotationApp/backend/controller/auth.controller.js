@@ -76,6 +76,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid role provided" });
     }
 
+    console.log("fond user ==>", foundUser);
+    
+
     if (!foundUser)
       return res
         .status(404)
@@ -97,7 +100,7 @@ exports.login = async (req, res) => {
             ? foundUser.companyName
             : foundUser.companyId.companyName,
         role,
-        companyId: role === "staff" ? null : foundUser._id,
+        companyId: role === "staff" ? foundUser.companyId._id : foundUser._id,
         staffId: role === "admin" ? null : foundUser._id,
       },
       process.env.JWT_AUTH_SCRET || "mysecret",
